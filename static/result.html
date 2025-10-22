@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识提取结果 - 个人健康知识图谱系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .session-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .session-id {
+            font-family: monospace;
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .status {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .result-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .confidence {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .confidence.high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .confidence.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .confidence.low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin: 0 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>知识提取结果</h1>
+        
+        <div class="session-info">
+            <div>会话ID: <span class="session-id" id="sessionId">-</span></div>
+        </div>
+        
+        <div class="status processing" id="status">
+            正在处理中...
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>正在提取知识...</div>
+        </div>
+        
+        <div class="results-container" id="resultsContainer" style="display: none;">
+            <div class="result-section">
+                <h2 class="result-title">提取的实体</h2>
+                <div class="table-container">
+                    <table id="entitiesTable">
+                        <thead>
+                            <tr>
+                                <th>实体名称</th>
+                                <th>类型</th>
+                                <th>置信度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">提取的关系</h2>
+                <div class="table-container">
+                    <table id="relationsTable">
+                        <thead>
+                            <tr>
+                                <th>关系类型</th>
+                                <th>源实体</th>
+                                <th>目标实体</th>
+                                <th>置信度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="btn" id="reExtractBtn" onclick="reExtract()">🔄 重新提取</button>
+            <a href="/static/graph.html" class="btn">🧠 查看图谱</a>
+            <a href="/static/health.html" class="btn">🧠 智能问答</a>
+            <a href="/" class="btn">📝 返回上传</a>
+        </div>
+    </div>
+
+    <script>
+        let sessionId = '';
+        let isProcessing = false;
+        
+        // 获取URL参数
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // 初始化页面
+        async function init() {
+            sessionId = getUrlParameter('session_id');
+            if (!sessionId) {
+                showStatus('无效的会话ID', 'error');
+                return;
+            }
+            
+            document.getElementById('sessionId').textContent = sessionId;
+            
+            // 开始提取
+            await extractKnowledge();
+        }
+        
+        // 提取知识
+        async function extractKnowledge() {
+            if (isProcessing) return;
+            
+            isProcessing = true;
+            document.getElementById('reExtractBtn').disabled = true;
+            
+            try {
+                showStatus('正在提取知识...', 'processing');
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('resultsContainer').style.display = 'none';
+                
+                const response = await fetch(`/extract/${sessionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('知识提取完成！', 'success');
+                    displayResults(result.extraction);
+                } else {
+                    showStatus(`提取失败: ${result.message || '未知错误'}`, 'error');
+                }
+                
+            } catch (error) {
+                showStatus(`提取失败: ${error.message}`, 'error');
+            } finally {
+                isProcessing = false;
+                document.getElementById('reExtractBtn').disabled = false;
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        // 重新提取
+        async function reExtract() {
+            await extractKnowledge();
+        }
+        
+        // 显示结果
+        function displayResults(extraction) {
+            const entitiesTable = document.querySelector('#entitiesTable tbody');
+            const relationsTable = document.querySelector('#relationsTable tbody');
+            
+            // 清空表格
+            entitiesTable.innerHTML = '';
+            relationsTable.innerHTML = '';
+            
+            // 显示实体
+            if (extraction.entities && extraction.entities.length > 0) {
+                extraction.entities.forEach(entity => {
+                    const row = entitiesTable.insertRow();
+                    row.insertCell(0).textContent = entity.name || '-';
+                    row.insertCell(1).textContent = entity.type || '-';
+                    const confidenceCell = row.insertCell(2);
+                    const confidence = entity.confidence || 0;
+                    confidenceCell.innerHTML = `<span class="confidence ${getConfidenceClass(confidence)}">${confidence.toFixed(2)}</span>`;
+                });
+            } else {
+                entitiesTable.innerHTML = '<tr><td colspan="3" class="empty-state">未提取到实体</td></tr>';
+            }
+            
+            // 显示关系
+            if (extraction.relations && extraction.relations.length > 0) {
+                extraction.relations.forEach(relation => {
+                    const row = relationsTable.insertRow();
+                    row.insertCell(0).textContent = relation.type || '-';
+                    row.insertCell(1).textContent = relation.source || '-';
+                    row.insertCell(2).textContent = relation.target || '-';
+                    const confidenceCell = row.insertCell(3);
+                    const confidence = relation.confidence || 0;
+                    confidenceCell.innerHTML = `<span class="confidence ${getConfidenceClass(confidence)}">${confidence.toFixed(2)}</span>`;
+                });
+            } else {
+                relationsTable.innerHTML = '<tr><td colspan="4" class="empty-state">未提取到关系</td></tr>';
+            }
+            
+            document.getElementById('resultsContainer').style.display = 'grid';
+        }
+        
+        // 获取置信度样式类
+        function getConfidenceClass(confidence) {
+            if (confidence >= 0.8) return 'high';
+            if (confidence >= 0.6) return 'medium';
+            return 'low';
+        }
+        
+        // 显示状态
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

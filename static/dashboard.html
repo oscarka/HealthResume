@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人健康知识图谱系统</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="https://unpkg.com/vis-network@9.1.6/dist/vis-network.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #ff00d4, #00ff88, #ffaa00);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .header h1 {
+            color: #ffffff;
+            margin: 0 0 15px 0;
+            font-size: 3em;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .header p {
+            color: #b0b0b0;
+            text-align: center;
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #b0b0b0;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+        
+        .tab:hover:not(.active) {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+        
+        .card h2 {
+            color: #ffffff;
+            margin: 0 0 20px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #333, #555);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 15px;
+            background: #0f0f0f;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 200, 100, 0.1));
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, rgba(255, 0, 100, 0.2), rgba(200, 0, 80, 0.1));
+            color: #ff0064;
+            border: 1px solid rgba(255, 0, 100, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 100, 0.2);
+        }
+        
+        .status.info {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 180, 220, 0.1));
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .result {
+            background: #0f0f0f;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result h3 {
+            color: #00d4ff;
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .result pre {
+            color: #ffffff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #00d4ff;
+            margin: 20px 0;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 0.9em;
+        }
+        
+        .graph-container {
+            background: #0f0f0f;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            height: 750px;
+            position: relative;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #vis-network {
+            width: 100%;
+            height: 700px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #0a0a0a;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+        
+        .legend h3 {
+            color: #00d4ff;
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .legend-user { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+        .legend-symptom { background: rgba(255, 0, 100, 0.2); color: #ff0064; }
+        .legend-disease { background: rgba(255, 170, 0, 0.2); color: #ffaa00; }
+        .legend-medication { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .legend-treatment { background: rgba(170, 68, 255, 0.2); color: #aa44ff; }
+        .legend-test { background: rgba(0, 255, 204, 0.2); color: #00ffcc; }
+        
+        .char-count {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 个人健康知识图谱系统</h1>
+            <p>智能健康分析 · 知识图谱可视化 · 个性化健康档案</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('upload')">📝 上传对话</div>
+            <div class="tab" onclick="switchTab('result')">📊 查看结果</div>
+            <div class="tab" onclick="switchTab('graph')">🕸️ 知识图谱</div>
+            <div class="tab" onclick="switchTab('health')">🧠 智能问答</div>
+        </div>
+        
+        <!-- 上传对话标签页 -->
+        <div id="upload" class="tab-content active">
+            <div class="card">
+                <h2>📝 上传医患对话</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px;">上传您的医患对话记录，系统将自动提取健康信息并构建知识图谱</p>
+                
+                <form id="uploadForm">
+                    <div class="input-group">
+                        <label for="conversation">对话内容</label>
+                        <textarea id="conversation" placeholder="请输入医患对话内容，例如：&#10;患者：医生，我最近总是头痛，还伴有发热。&#10;医生：头痛持续多长时间了？还有其他症状吗？&#10;患者：大概一周了，有时候还会咳嗽。"></textarea>
+                        <div class="char-count" id="charCount">0 字符</div>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">🚀 上传对话</button>
+                </form>
+                
+                <div class="loading" id="upload-loading">
+                    <div>正在上传...</div>
+                </div>
+                
+                <div class="status" id="upload-status"></div>
+            </div>
+        </div>
+        
+        <!-- 查看结果标签页 -->
+        <div id="result" class="tab-content">
+            <div class="card">
+                <h2>📊 知识提取结果</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px;">查看从对话中提取的实体和关系信息</p>
+                
+                <div class="input-group">
+                    <label for="session-id">会话ID</label>
+                    <input type="text" id="session-id" placeholder="输入会话ID或留空查看最新结果">
+                </div>
+                
+                <button class="btn" onclick="loadResult()">🔄 加载结果</button>
+                <button class="btn btn-secondary" onclick="reExtract()">🔄 重新提取</button>
+                
+                <div class="loading" id="result-loading">正在加载结果...</div>
+                <div class="status" id="result-status"></div>
+                
+                <div class="result" id="result-content">
+                    <h3>提取结果</h3>
+                    <div id="entities-table"></div>
+                    <div id="relations-table"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 知识图谱标签页 -->
+        <div id="graph" class="tab-content">
+            <div class="card">
+                <h2>🕸️ 个人健康知识图谱</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px;">可视化展示您的健康信息网络，探索症状、疾病、药物之间的关系</p>
+                
+                <div class="controls">
+                    <button class="btn" onclick="loadGraph()">🔄 刷新图谱</button>
+                    <button class="btn" onclick="resetLayout()">📐 重新布局</button>
+                    <button class="btn" onclick="togglePhysics()">⚡ 物理引擎</button>
+                    <button class="btn" onclick="changeLayout()">🎨 切换布局</button>
+                    <button class="btn" onclick="toggleLabels()">🏷️ 切换标签</button>
+                </div>
+                
+                <div class="graph-container">
+                    <div id="vis-network"></div>
+                </div>
+                
+                <div class="status" id="graph-status"></div>
+                
+                <div class="legend">
+                    <h3>🎨 图例说明</h3>
+                    <div class="legend-items">
+                        <span class="legend-item legend-user">👤 用户</span>
+                        <span class="legend-item legend-symptom">🩺 症状</span>
+                        <span class="legend-item legend-disease">🏥 疾病</span>
+                        <span class="legend-item legend-medication">💊 药物</span>
+                        <span class="legend-item legend-treatment">🔬 治疗</span>
+                        <span class="legend-item legend-test">🧪 检查</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 智能问答标签页 -->
+        <div id="health" class="tab-content">
+            <div class="two-column">
+                <div class="card">
+                    <h2>📋 健康档案生成</h2>
+                    <p style="color: #b0b0b0; margin-bottom: 20px;">基于您的健康图谱数据，AI将生成一份完整的个人健康档案</p>
+                    
+                    <div class="input-group">
+                        <label for="profile-user-id">用户ID</label>
+                        <input type="text" id="profile-user-id" value="default_user" placeholder="输入用户ID">
+                    </div>
+                    
+                    <button class="btn" onclick="generateHealthProfile()">🎯 生成健康档案</button>
+                    
+                    <div class="loading" id="profile-loading">正在生成健康档案...</div>
+                    <div class="status" id="profile-status"></div>
+                    <div class="result" id="profile-result">
+                        <h3>健康档案</h3>
+                        <pre id="profile-content"></pre>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>💬 智能问答</h2>
+                    <p style="color: #b0b0b0; margin-bottom: 20px;">向AI询问您的健康问题，获得基于图谱的专业回答</p>
+                    
+                    <div class="input-group">
+                        <label for="qa-user-id">用户ID</label>
+                        <input type="text" id="qa-user-id" value="default_user" placeholder="输入用户ID">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="health-question">健康问题</label>
+                        <textarea id="health-question" placeholder="例如：我有什么症状？我有没有高血压问题？我的头痛是什么原因？"></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="askHealthQuestion()">🤖 询问AI</button>
+                    
+                    <div class="loading" id="qa-loading">AI正在思考...</div>
+                    <div class="status" id="qa-status"></div>
+                    <div class="result" id="qa-result">
+                        <h3>AI回答</h3>
+                        <pre id="qa-content"></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 健康数据统计</h2>
+                <div class="stats-grid" id="stats-grid">
+                    <!-- 统计数据将通过JavaScript动态加载 -->
+                </div>
+                <button class="btn" onclick="loadHealthStats()" style="width: auto; margin: 0;">🔄 刷新统计</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let network;
+        let nodes;
+        let edges;
+        let showLabels = true;
+        let physicsEnabled = true;
+        let currentLayout = 'force';
+        let currentSessionId = '';
+        
+        // 标签页切换
+        function switchTab(tabName) {
+            // 隐藏所有标签页内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有标签的active类
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的标签页内容
+            document.getElementById(tabName).classList.add('active');
+            
+            // 为选中的标签添加active类
+            event.target.classList.add('active');
+            
+            // 根据标签页执行相应操作
+            if (tabName === 'graph') {
+                initGraph();
+            } else if (tabName === 'health') {
+                loadHealthStats();
+            }
+        }
+        
+        // 上传对话功能
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('conversation').value.trim();
+            if (!content) {
+                showStatus('请输入对话内容', 'error', 'upload-status');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('upload-loading');
+            const status = document.getElementById('upload-status');
+            
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentSessionId = result.session_id;
+                    showStatus(`上传成功！会话ID: ${result.session_id}`, 'success', 'upload-status');
+                    
+                    // 自动切换到结果页面
+                    setTimeout(() => {
+                        switchTab('result');
+                        document.querySelector('.tab[onclick="switchTab(\'result\')"]').classList.add('active');
+                        document.querySelector('.tab[onclick="switchTab(\'upload\')"]').classList.remove('active');
+                        loadResult();
+                    }, 2000);
+                } else {
+                    showStatus(`上传失败: ${result.message || '未知错误'}`, 'error', 'upload-status');
+                }
+                
+            } catch (error) {
+                showStatus(`上传失败: ${error.message}`, 'error', 'upload-status');
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+        
+        // 字符计数
+        document.getElementById('conversation').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('charCount').textContent = `${count} 字符`;
+        });
+        
+        // 加载结果
+        async function loadResult() {
+            const sessionId = document.getElementById('session-id').value || currentSessionId;
+            const loading = document.getElementById('result-loading');
+            const status = document.getElementById('result-status');
+            const content = document.getElementById('result-content');
+            
+            if (!sessionId) {
+                showStatus('请输入会话ID', 'error', 'result-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            content.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/result/${sessionId}`);
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('结果加载成功！', 'success', 'result-status');
+                    console.log('API返回的数据:', data);
+                    console.log('entities:', data.entities);
+                    console.log('relations:', data.relations);
+                    displayResult(data);
+                    content.style.display = 'block';
+                } else {
+                    showStatus(data.detail || data.message || '加载失败', 'error', 'result-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('加载结果失败: ' + error.message, 'error', 'result-status');
+            }
+        }
+        
+        // 显示结果
+        function displayResult(result) {
+            console.log('displayResult接收到的参数:', result);
+            console.log('result类型:', typeof result);
+            console.log('result.entities:', result?.entities);
+            
+            if (!result) {
+                console.error('displayResult: result参数为空');
+                return;
+            }
+            
+            const entitiesTable = document.getElementById('entities-table');
+            const relationsTable = document.getElementById('relations-table');
+            
+            // 显示实体
+            if (result.entities && result.entities.length > 0) {
+                entitiesTable.innerHTML = `
+                    <h3 style="color: #00d4ff; margin: 20px 0 10px 0;">实体信息</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <thead>
+                            <tr style="background: #1a1a1a;">
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">名称</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">类型</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">置信度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.entities.map(entity => `
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #333;">${entity.name}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${entity.type}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${(entity.confidence * 100).toFixed(1)}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                entitiesTable.innerHTML = '<p style="color: #666;">暂无实体信息</p>';
+            }
+            
+            // 显示关系
+            if (result.relations && result.relations.length > 0) {
+                relationsTable.innerHTML = `
+                    <h3 style="color: #00d4ff; margin: 20px 0 10px 0;">关系信息</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #1a1a1a;">
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">起点</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">关系</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">终点</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">置信度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.relations.map(relation => `
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #333;">${relation.source}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${relation.type}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${relation.target}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${(relation.confidence * 100).toFixed(1)}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                relationsTable.innerHTML = '<p style="color: #666;">暂无关系信息</p>';
+            }
+        }
+        
+        // 重新提取
+        async function reExtract() {
+            const sessionId = document.getElementById('session-id').value || currentSessionId;
+            const loading = document.getElementById('result-loading');
+            const status = document.getElementById('result-status');
+            
+            if (!sessionId) {
+                showStatus('请输入会话ID', 'error', 'result-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/extract/${sessionId}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('重新提取成功！', 'success', 'result-status');
+                    loadResult();
+                } else {
+                    showStatus(data.detail || data.message || '提取失败', 'error', 'result-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('重新提取失败: ' + error.message, 'error', 'result-status');
+            }
+        }
+        
+        // 图谱功能
+        function initGraph() {
+            try {
+                // 检查vis.js是否加载
+                if (typeof vis === 'undefined') {
+                    showStatus('vis.js库加载失败，请刷新页面重试', 'error', 'graph-status');
+                    return;
+                }
+                
+                // 创建容器
+                const container = document.getElementById('vis-network');
+                
+                // 初始化空数据
+                nodes = new vis.DataSet([]);
+                edges = new vis.DataSet([]);
+                
+                // 网络配置
+                const options = {
+                    nodes: {
+                        shape: 'dot',
+                        size: 20,
+                        font: {
+                            size: 14,
+                            color: '#ffffff',
+                            strokeWidth: 2,
+                            strokeColor: '#000000'
+                        },
+                        borderWidth: 3,
+                        shadow: {
+                            enabled: true,
+                            color: 'rgba(0, 212, 255, 0.5)',
+                            size: 10,
+                            x: 0,
+                            y: 0
+                        },
+                        scaling: {
+                            min: 10,
+                            max: 50,
+                            label: {
+                                enabled: true,
+                                min: 14,
+                                max: 20,
+                                maxVisible: 20,
+                                drawThreshold: 5
+                            }
+                        }
+                    },
+                    edges: {
+                        width: 3,
+                        color: {
+                            color: '#ffffff',
+                            highlight: '#00d4ff',
+                            hover: '#ff00d4'
+                        },
+                        font: {
+                            size: 12,
+                            color: '#ffffff',
+                            strokeWidth: 2,
+                            strokeColor: '#000000'
+                        },
+                        arrows: {
+                            to: {
+                                enabled: true,
+                                scaleFactor: 1.2,
+                                type: 'arrow'
+                            }
+                        },
+                        smooth: {
+                            enabled: true,
+                            type: 'continuous',
+                            roundness: 0.2
+                        },
+                        shadow: {
+                            enabled: true,
+                            color: 'rgba(0, 0, 0, 0.3)',
+                            size: 5,
+                            x: 0,
+                            y: 0
+                        }
+                    },
+                    physics: {
+                        enabled: physicsEnabled,
+                        stabilization: {
+                            enabled: true,
+                            iterations: 200,
+                            updateInterval: 25,
+                            onlyDynamicEdges: false,
+                            fit: true
+                        },
+                        solver: 'forceAtlas2Based',
+                        forceAtlas2Based: {
+                            gravitationalConstant: -80,  // 增加排斥力
+                            centralGravity: 0.005,       // 减少中心引力
+                            springLength: 150,           // 增加弹簧长度
+                            springConstant: 0.05,        // 减少弹簧强度
+                            damping: 0.6,                // 增加阻尼
+                            avoidOverlap: 2              // 增加避免重叠
+                        },
+                        maxVelocity: 30,
+                        minVelocity: 0.2,
+                        timestep: 0.35,
+                        adaptiveTimestep: true
+                    },
+                    interaction: {
+                        dragNodes: true,
+                        dragView: true,
+                        hideEdgesOnDrag: false,
+                        hideEdgesOnZoom: false,
+                        hideNodesOnDrag: false,
+                        hover: true,
+                        hoverConnectedEdges: true,
+                        keyboard: {
+                            enabled: true,
+                            speed: {x: 10, y: 10, zoom: 0.02},
+                            bindToWindow: true
+                        },
+                        multiselect: false,
+                        navigationButtons: true,
+                        selectable: true,
+                        selectConnectedEdges: true,
+                        tooltipDelay: 300,
+                        zoomSpeed: 1,
+                        zoomView: true
+                    },
+                    layout: {
+                        improvedLayout: true,
+                        clusterThreshold: 150
+                    }
+                };
+                
+                // 创建网络
+                network = new vis.Network(container, {nodes: nodes, edges: edges}, options);
+                
+                // 添加事件监听
+                network.on('click', function(params) {
+                    if (params.nodes.length > 0) {
+                        const nodeId = params.nodes[0];
+                        const node = nodes.get(nodeId);
+                        showNodeInfo(node);
+                    } else if (params.edges.length > 0) {
+                        const edgeId = params.edges[0];
+                        const edge = edges.get(edgeId);
+                        showEdgeInfo(edge);
+                    }
+                });
+                
+                network.on('hoverNode', function(params) {
+                    // 鼠标悬停效果
+                    const nodeId = params.node;
+                    const node = nodes.get(nodeId);
+                    if (node) {
+                        nodes.update({
+                            id: nodeId,
+                            size: Math.min(node.size * 1.5, 50),
+                            shadow: {
+                                enabled: true,
+                                color: 'rgba(0, 212, 255, 0.8)',
+                                size: 15
+                            }
+                        });
+                    }
+                });
+                
+                network.on('blurNode', function(params) {
+                    // 恢复原始大小
+                    const nodeId = params.node;
+                    const node = nodes.get(nodeId);
+                    if (node) {
+                        const group = node.group || 'default';
+                        const baseSize = getNodeSize(group);
+                        nodes.update({
+                            id: nodeId,
+                            size: baseSize,
+                            shadow: {
+                                enabled: true,
+                                color: getNodeColor(group),
+                                size: 10
+                            }
+                        });
+                    }
+                });
+                
+                network.on('stabilizationIterationsDone', function() {
+                    console.log('网络稳定化完成');
+                    // 确保图谱完全显示在容器内
+                    network.fit();
+                    showStatus('图谱加载完成！', 'success', 'graph-status');
+                });
+                
+                console.log('vis.js网络初始化成功');
+            } catch (error) {
+                console.error('vis.js网络初始化失败:', error);
+                showStatus('网络初始化失败: ' + error.message, 'error', 'graph-status');
+            }
+        }
+        
+        // 获取节点大小
+        function getNodeSize(group) {
+            const sizes = {
+                'user': 30,
+                '症状': 25,
+                '疾病': 25,
+                '药物': 25,
+                '治疗': 25,
+                '检查': 25,
+                'default': 20
+            };
+            return sizes[group] || sizes['default'];
+        }
+        
+        // 获取节点颜色
+        function getNodeColor(group) {
+            const colors = {
+                'user': 'rgba(0, 212, 255, 0.5)',
+                '症状': 'rgba(255, 0, 100, 0.5)',
+                '疾病': 'rgba(255, 170, 0, 0.5)',
+                '药物': 'rgba(0, 255, 136, 0.5)',
+                '治疗': 'rgba(170, 68, 255, 0.5)',
+                '检查': 'rgba(0, 255, 204, 0.5)',
+                'default': 'rgba(0, 212, 255, 0.5)'
+            };
+            return colors[group] || colors['default'];
+        }
+        
+        // 获取节点背景色
+        function getNodeBackgroundColor(group) {
+            const colors = {
+                'user': '#00d4ff',
+                '症状': '#ff0064',
+                '疾病': '#ffaa00',
+                '药物': '#00ff88',
+                '治疗': '#aa44ff',
+                '检查': '#00ffcc',
+                'default': '#00d4ff'
+            };
+            return colors[group] || colors['default'];
+        }
+        
+        // 加载图谱数据
+        async function loadGraph() {
+            showStatus('正在加载图谱数据...', 'info', 'graph-status');
+            
+            try {
+                // 检查network是否已初始化
+                if (!network) {
+                    showStatus('网络未初始化，请刷新页面重试', 'error', 'graph-status');
+                    return;
+                }
+                
+                const response = await fetch('/graph/default_user');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const graph = data.graph;
+                    
+                    // 清空现有数据
+                    nodes.clear();
+                    edges.clear();
+                    
+                    // 添加节点
+                    if (graph.nodes && graph.nodes.length > 0) {
+                        const visNodes = graph.nodes.map(node => ({
+                            id: node.id,
+                            label: showLabels ? node.label : '',
+                            group: node.group || 'default',
+                            size: getNodeSize(node.group),
+                            color: {
+                                background: getNodeBackgroundColor(node.group),
+                                border: '#ffffff',
+                                highlight: {
+                                    background: getNodeBackgroundColor(node.group),
+                                    border: '#00d4ff'
+                                },
+                                hover: {
+                                    background: getNodeBackgroundColor(node.group),
+                                    border: '#ff00d4'
+                                }
+                            },
+                            shadow: {
+                                enabled: true,
+                                color: getNodeColor(node.group),
+                                size: 10
+                            },
+                            font: {
+                                size: 14,
+                                color: '#ffffff',
+                                strokeWidth: 2,
+                                strokeColor: '#000000'
+                            }
+                        }));
+                        
+                        nodes.add(visNodes);
+                    }
+                    
+                    // 添加边
+                    if (graph.edges && graph.edges.length > 0) {
+                        const visEdges = graph.edges.map(edge => ({
+                            id: edge.id,
+                            from: edge.source,
+                            to: edge.target,
+                            label: showLabels ? edge.label : '',
+                            color: {
+                                color: '#ffffff',
+                                highlight: '#00d4ff',
+                                hover: '#ff00d4'
+                            },
+                            font: {
+                                size: 12,
+                                color: '#ffffff',
+                                strokeWidth: 2,
+                                strokeColor: '#000000'
+                            }
+                        }));
+                        
+                        edges.add(visEdges);
+                    }
+                    
+                    // 应用布局 - 使用力导向布局避免聚集
+                    applyLayout('force');
+                    
+                    // 确保图谱完全显示在容器内
+                    setTimeout(() => {
+                        network.fit();
+                    }, 100);
+                    
+                    showStatus(`图谱加载成功！包含 ${graph.nodes.length} 个节点和 ${graph.edges.length} 条关系`, 'success', 'graph-status');
+                } else {
+                    showStatus('加载图谱失败: ' + (data.message || '未知错误'), 'error', 'graph-status');
+                }
+            } catch (error) {
+                console.error('加载图谱失败:', error);
+                showStatus('加载图谱失败: ' + error.message, 'error', 'graph-status');
+            }
+        }
+        
+        // 应用布局
+        function applyLayout(layoutType) {
+            if (!network) return;
+            
+            const layoutOptions = {
+                hierarchical: {
+                    enabled: true,
+                    direction: 'UD',
+                    sortMethod: 'directed',
+                    nodeSpacing: 200,
+                    levelSeparation: 150,
+                    treeSpacing: 200
+                },
+                force: {
+                    enabled: false
+                }
+            };
+            
+            if (layoutType === 'hierarchical') {
+                network.setOptions({
+                    layout: layoutOptions.hierarchical,
+                    physics: {
+                        enabled: false
+                    }
+                });
+            } else {
+                // 力导向布局 - 优化参数避免聚集
+                network.setOptions({
+                    layout: layoutOptions.force,
+                    physics: {
+                        enabled: true,
+                        solver: 'forceAtlas2Based',
+                        stabilization: {
+                            enabled: true,
+                            iterations: 200,
+                            updateInterval: 25,
+                            onlyDynamicEdges: false,
+                            fit: true
+                        },
+                        forceAtlas2Based: {
+                            gravitationalConstant: -80,  // 增加排斥力
+                            centralGravity: 0.005,       // 减少中心引力
+                            springLength: 150,           // 增加弹簧长度
+                            springConstant: 0.05,        // 减少弹簧强度
+                            damping: 0.6,                // 增加阻尼
+                            avoidOverlap: 2              // 增加避免重叠
+                        },
+                        maxVelocity: 30,
+                        minVelocity: 0.2,
+                        timestep: 0.35,
+                        adaptiveTimestep: true
+                    }
+                });
+            }
+        }
+        
+        // 重新布局
+        function resetLayout() {
+            if (!network) {
+                showStatus('网络未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            // 随机化节点位置，让力导向算法重新计算
+            const nodeIds = nodes.getIds();
+            const randomNodes = nodeIds.map(id => ({
+                id: id,
+                x: Math.random() * 800 - 400,  // 随机位置范围
+                y: Math.random() * 600 - 300
+            }));
+            
+            nodes.update(randomNodes);
+            
+            // 强制重新启动物理引擎，产生飘荡效果
+            network.setOptions({
+                physics: {
+                    enabled: true,
+                    solver: 'forceAtlas2Based',
+                    stabilization: {
+                        enabled: true,
+                        iterations: 200,
+                        updateInterval: 25,
+                        onlyDynamicEdges: false,
+                        fit: true
+                    },
+                    forceAtlas2Based: {
+                        gravitationalConstant: -80,  // 增加排斥力
+                        centralGravity: 0.005,       // 减少中心引力
+                        springLength: 150,           // 增加弹簧长度
+                        springConstant: 0.05,        // 减少弹簧强度
+                        damping: 0.6,                // 增加阻尼
+                        avoidOverlap: 2              // 增加避免重叠
+                    },
+                    maxVelocity: 30,
+                    minVelocity: 0.2,
+                    timestep: 0.35,
+                    adaptiveTimestep: true
+                }
+            });
+            
+            // 重新启动稳定化过程
+            network.stabilize();
+            
+            // 确保图谱完全显示
+            setTimeout(() => {
+                network.fit();
+            }, 200);
+            
+            showStatus('布局已重置，正在重新计算...', 'info', 'graph-status');
+        }
+        
+        // 切换物理引擎
+        function togglePhysics() {
+            if (!network) {
+                showStatus('网络未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            physicsEnabled = !physicsEnabled;
+            
+            network.setOptions({
+                physics: {
+                    enabled: physicsEnabled,
+                    solver: physicsEnabled ? 'forceAtlas2Based' : 'none',
+                    stabilization: {
+                        enabled: true,
+                        iterations: 200,
+                        updateInterval: 25,
+                        onlyDynamicEdges: false,
+                        fit: true
+                    },
+                    forceAtlas2Based: {
+                        gravitationalConstant: -80,  // 增加排斥力
+                        centralGravity: 0.005,       // 减少中心引力
+                        springLength: 150,           // 增加弹簧长度
+                        springConstant: 0.05,        // 减少弹簧强度
+                        damping: 0.6,                // 增加阻尼
+                        avoidOverlap: 2              // 增加避免重叠
+                    },
+                    maxVelocity: 30,
+                    minVelocity: 0.2,
+                    timestep: 0.35,
+                    adaptiveTimestep: true
+                }
+            });
+            
+            showStatus(physicsEnabled ? '物理引擎已启用' : '物理引擎已禁用', 'info', 'graph-status');
+        }
+        
+        // 切换布局
+        function changeLayout() {
+            if (!network) {
+                showStatus('网络未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            currentLayout = currentLayout === 'hierarchical' ? 'force' : 'hierarchical';
+            applyLayout(currentLayout);
+            
+            showStatus(`布局已切换到: ${currentLayout === 'hierarchical' ? '层次布局' : '力导向布局'}`, 'info', 'graph-status');
+        }
+        
+        // 切换标签
+        function toggleLabels() {
+            if (!network) {
+                showStatus('网络未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            showLabels = !showLabels;
+            
+            // 更新节点标签
+            const nodeIds = nodes.getIds();
+            const updatedNodes = nodeIds.map(id => {
+                const node = nodes.get(id);
+                return {
+                    id: id,
+                    label: showLabels ? node.label : ''
+                };
+            });
+            nodes.update(updatedNodes);
+            
+            // 更新边标签
+            const edgeIds = edges.getIds();
+            const updatedEdges = edgeIds.map(id => {
+                const edge = edges.get(id);
+                return {
+                    id: id,
+                    label: showLabels ? edge.label : ''
+                };
+            });
+            edges.update(updatedEdges);
+            
+            showStatus(showLabels ? '标签已显示' : '标签已隐藏', 'info', 'graph-status');
+        }
+        
+        // 显示节点信息
+        function showNodeInfo(node) {
+            const info = `
+节点信息:
+- ID: ${node.id}
+- 标签: ${node.label}
+- 类型: ${node.group}
+- 置信度: ${(node.confidence * 100).toFixed(1)}%
+            `.trim();
+            alert(info);
+        }
+        
+        // 显示边信息
+        function showEdgeInfo(edge) {
+            const info = `
+关系信息:
+- ID: ${edge.id}
+- 起点: ${edge.from}
+- 终点: ${edge.to}
+- 标签: ${edge.label}
+- 置信度: ${(edge.confidence * 100).toFixed(1)}%
+            `.trim();
+            alert(info);
+        }
+        
+        // 健康问答功能
+        async function generateHealthProfile() {
+            const userId = document.getElementById('profile-user-id').value;
+            const loading = document.getElementById('profile-loading');
+            const status = document.getElementById('profile-status');
+            const result = document.getElementById('profile-result');
+            const content = document.getElementById('profile-content');
+            
+            if (!userId.trim()) {
+                showStatus('请输入用户ID', 'error', 'profile-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/health/profile/${userId}`);
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('健康档案生成成功！', 'success', 'profile-status');
+                    content.textContent = data.profile;
+                    result.style.display = 'block';
+                } else {
+                    showStatus(data.message || data.error || '生成失败', 'error', 'profile-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('生成健康档案失败: ' + error.message, 'error', 'profile-status');
+            }
+        }
+        
+        async function askHealthQuestion() {
+            const userId = document.getElementById('qa-user-id').value;
+            const question = document.getElementById('health-question').value;
+            const loading = document.getElementById('qa-loading');
+            const status = document.getElementById('qa-status');
+            const result = document.getElementById('qa-result');
+            const content = document.getElementById('qa-content');
+            
+            if (!userId.trim()) {
+                showStatus('请输入用户ID', 'error', 'qa-status');
+                return;
+            }
+            
+            if (!question.trim()) {
+                showStatus('请输入健康问题', 'error', 'qa-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/health/ask/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({question: question})
+                });
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('AI回答成功！', 'success', 'qa-status');
+                    content.textContent = data.answer;
+                    result.style.display = 'block';
+                } else {
+                    showStatus(data.message || data.error || '问答失败', 'error', 'qa-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('健康问答失败: ' + error.message, 'error', 'qa-status');
+            }
+        }
+        
+        async function loadHealthStats() {
+            const userId = document.getElementById('profile-user-id').value || 'default_user';
+            const statsGrid = document.getElementById('stats-grid');
+            
+            try {
+                const response = await fetch(`/health/summary/${userId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.statistics;
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_symptoms}</div>
+                            <div class="stat-label">症状</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_diseases}</div>
+                            <div class="stat-label">疾病</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_medications}</div>
+                            <div class="stat-label">药物</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_treatments}</div>
+                            <div class="stat-label">治疗</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_tests}</div>
+                            <div class="stat-label">检查</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_items}</div>
+                            <div class="stat-label">总计</div>
+                        </div>
+                    `;
+                } else {
+                    statsGrid.innerHTML = '<div style="color: #ff0064; text-align: center;">暂无健康数据</div>';
+                }
+            } catch (error) {
+                statsGrid.innerHTML = '<div style="color: #ff0064; text-align: center;">加载统计失败</div>';
+            }
+        }
+        
+        // 显示状态消息
+        function showStatus(message, type, elementId) {
+            const status = document.getElementById(elementId);
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHealthStats();
+        });
+    </script>
+</body>
+</html>
