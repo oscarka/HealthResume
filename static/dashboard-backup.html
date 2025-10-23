@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人健康知识图谱系统</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre@5.1.2/dist/dagre.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #ff00d4, #00ff88, #ffaa00);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .header h1 {
+            color: #ffffff;
+            margin: 0 0 15px 0;
+            font-size: 3em;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .header p {
+            color: #b0b0b0;
+            text-align: center;
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #b0b0b0;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+        
+        .tab:hover:not(.active) {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+        
+        .card h2 {
+            color: #ffffff;
+            margin: 0 0 20px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #333, #555);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 15px;
+            background: #0f0f0f;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 200, 100, 0.1));
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, rgba(255, 0, 100, 0.2), rgba(200, 0, 80, 0.1));
+            color: #ff0064;
+            border: 1px solid rgba(255, 0, 100, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 100, 0.2);
+        }
+        
+        .status.info {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 180, 220, 0.1));
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .result {
+            background: #0f0f0f;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result h3 {
+            color: #00d4ff;
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .result pre {
+            color: #ffffff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #00d4ff;
+            margin: 20px 0;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 0.9em;
+        }
+        
+        .graph-container {
+            background: #0f0f0f;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            height: 600px;
+            position: relative;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #cy {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #0a0a0a;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+        
+        .legend h3 {
+            color: #00d4ff;
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .legend-user { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+        .legend-symptom { background: rgba(255, 0, 100, 0.2); color: #ff0064; }
+        .legend-disease { background: rgba(255, 170, 0, 0.2); color: #ffaa00; }
+        .legend-medication { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .legend-treatment { background: rgba(170, 68, 255, 0.2); color: #aa44ff; }
+        .legend-test { background: rgba(0, 255, 204, 0.2); color: #00ffcc; }
+        
+        .char-count {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 个人健康知识图谱系统</h1>
+            <p>智能健康分析 · 知识图谱可视化 · 个性化健康档案</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('upload')">📝 上传对话</div>
+            <div class="tab" onclick="switchTab('result')">📊 查看结果</div>
+            <div class="tab" onclick="switchTab('graph')">🕸️ 知识图谱</div>
+            <div class="tab" onclick="switchTab('health')">🧠 智能问答</div>
+        </div>
+        
+        <!-- 上传对话标签页 -->
+        <div id="upload" class="tab-content active">
+            <div class="card">
+                <h2>📝 上传医患对话</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px;">上传您的医患对话记录，系统将自动提取健康信息并构建知识图谱</p>
+                
+                <form id="uploadForm">
+                    <div class="input-group">
+                        <label for="conversation">对话内容</label>
+                        <textarea id="conversation" placeholder="请输入医患对话内容，例如：&#10;患者：医生，我最近总是头痛，还伴有发热。&#10;医生：头痛持续多长时间了？还有其他症状吗？&#10;患者：大概一周了，有时候还会咳嗽。"></textarea>
+                        <div class="char-count" id="charCount">0 字符</div>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">🚀 上传对话</button>
+                </form>
+                
+                <div class="loading" id="upload-loading">
+                    <div>正在上传...</div>
+                </div>
+                
+                <div class="status" id="upload-status"></div>
+            </div>
+        </div>
+        
+        <!-- 查看结果标签页 -->
+        <div id="result" class="tab-content">
+            <div class="card">
+                <h2>📊 知识提取结果</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px;">查看从对话中提取的实体和关系信息</p>
+                
+                <div class="input-group">
+                    <label for="session-id">会话ID</label>
+                    <input type="text" id="session-id" placeholder="输入会话ID或留空查看最新结果">
+                </div>
+                
+                <button class="btn" onclick="loadResult()">🔄 加载结果</button>
+                <button class="btn btn-secondary" onclick="reExtract()">🔄 重新提取</button>
+                
+                <div class="loading" id="result-loading">正在加载结果...</div>
+                <div class="status" id="result-status"></div>
+                
+                <div class="result" id="result-content">
+                    <h3>提取结果</h3>
+                    <div id="entities-table"></div>
+                    <div id="relations-table"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 知识图谱标签页 -->
+        <div id="graph" class="tab-content">
+            <div class="card">
+                <h2>🕸️ 个人健康知识图谱</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px;">可视化展示您的健康信息网络，探索症状、疾病、药物之间的关系</p>
+                
+                <div class="controls">
+                    <button class="btn" onclick="loadGraph()">🔄 刷新图谱</button>
+                    <button class="btn" onclick="resetLayout()">📐 重新布局</button>
+                    <button class="btn" onclick="toggleLabels()">🏷️ 切换标签</button>
+                    <button class="btn" onclick="togglePhysics()">⚡ 物理引擎</button>
+                    <a href="/static/graph-visjs.html" class="btn btn-secondary">🆚 vis.js版本</a>
+                </div>
+                
+                <div class="graph-container">
+                    <div id="cy"></div>
+                </div>
+                
+                <div class="status" id="graph-status"></div>
+                
+                <div class="legend">
+                    <h3>🎨 图例说明</h3>
+                    <div class="legend-items">
+                        <span class="legend-item legend-user">👤 用户</span>
+                        <span class="legend-item legend-symptom">🩺 症状</span>
+                        <span class="legend-item legend-disease">🏥 疾病</span>
+                        <span class="legend-item legend-medication">💊 药物</span>
+                        <span class="legend-item legend-treatment">🔬 治疗</span>
+                        <span class="legend-item legend-test">🧪 检查</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 智能问答标签页 -->
+        <div id="health" class="tab-content">
+            <div class="two-column">
+                <div class="card">
+                    <h2>📋 健康档案生成</h2>
+                    <p style="color: #b0b0b0; margin-bottom: 20px;">基于您的健康图谱数据，AI将生成一份完整的个人健康档案</p>
+                    
+                    <div class="input-group">
+                        <label for="profile-user-id">用户ID</label>
+                        <input type="text" id="profile-user-id" value="default_user" placeholder="输入用户ID">
+                    </div>
+                    
+                    <button class="btn" onclick="generateHealthProfile()">🎯 生成健康档案</button>
+                    
+                    <div class="loading" id="profile-loading">正在生成健康档案...</div>
+                    <div class="status" id="profile-status"></div>
+                    <div class="result" id="profile-result">
+                        <h3>健康档案</h3>
+                        <pre id="profile-content"></pre>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>💬 智能问答</h2>
+                    <p style="color: #b0b0b0; margin-bottom: 20px;">向AI询问您的健康问题，获得基于图谱的专业回答</p>
+                    
+                    <div class="input-group">
+                        <label for="qa-user-id">用户ID</label>
+                        <input type="text" id="qa-user-id" value="default_user" placeholder="输入用户ID">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="health-question">健康问题</label>
+                        <textarea id="health-question" placeholder="例如：我有什么症状？我有没有高血压问题？我的头痛是什么原因？"></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="askHealthQuestion()">🤖 询问AI</button>
+                    
+                    <div class="loading" id="qa-loading">AI正在思考...</div>
+                    <div class="status" id="qa-status"></div>
+                    <div class="result" id="qa-result">
+                        <h3>AI回答</h3>
+                        <pre id="qa-content"></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 健康数据统计</h2>
+                <div class="stats-grid" id="stats-grid">
+                    <!-- 统计数据将通过JavaScript动态加载 -->
+                </div>
+                <button class="btn" onclick="loadHealthStats()" style="width: auto; margin: 0;">🔄 刷新统计</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cy;
+        let showLabels = true;
+        let physicsEnabled = true;
+        let currentSessionId = '';
+        
+        // 标签页切换
+        function switchTab(tabName) {
+            // 隐藏所有标签页内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有标签的active类
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的标签页内容
+            document.getElementById(tabName).classList.add('active');
+            
+            // 为选中的标签添加active类
+            event.target.classList.add('active');
+            
+            // 根据标签页执行相应操作
+            if (tabName === 'graph') {
+                initGraph();
+            } else if (tabName === 'health') {
+                loadHealthStats();
+            }
+        }
+        
+        // 上传对话功能
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('conversation').value.trim();
+            if (!content) {
+                showStatus('请输入对话内容', 'error', 'upload-status');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('upload-loading');
+            const status = document.getElementById('upload-status');
+            
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentSessionId = result.session_id;
+                    showStatus(`上传成功！会话ID: ${result.session_id}`, 'success', 'upload-status');
+                    
+                    // 自动切换到结果页面
+                    setTimeout(() => {
+                        switchTab('result');
+                        document.querySelector('.tab[onclick="switchTab(\'result\')"]').classList.add('active');
+                        document.querySelector('.tab[onclick="switchTab(\'upload\')"]').classList.remove('active');
+                        loadResult();
+                    }, 2000);
+                } else {
+                    showStatus(`上传失败: ${result.message || '未知错误'}`, 'error', 'upload-status');
+                }
+                
+            } catch (error) {
+                showStatus(`上传失败: ${error.message}`, 'error', 'upload-status');
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+        
+        // 字符计数
+        document.getElementById('conversation').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('charCount').textContent = `${count} 字符`;
+        });
+        
+        // 加载结果
+        async function loadResult() {
+            const sessionId = document.getElementById('session-id').value || currentSessionId;
+            const loading = document.getElementById('result-loading');
+            const status = document.getElementById('result-status');
+            const content = document.getElementById('result-content');
+            
+            if (!sessionId) {
+                showStatus('请输入会话ID', 'error', 'result-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            content.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/result/${sessionId}`);
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('结果加载成功！', 'success', 'result-status');
+                    console.log('API返回的数据:', data);
+                    console.log('entities:', data.entities);
+                    console.log('relations:', data.relations);
+                    displayResult(data);
+                    content.style.display = 'block';
+                } else {
+                    showStatus(data.detail || data.message || '加载失败', 'error', 'result-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('加载结果失败: ' + error.message, 'error', 'result-status');
+            }
+        }
+        
+        // 显示结果
+        function displayResult(result) {
+            console.log('displayResult接收到的参数:', result);
+            console.log('result类型:', typeof result);
+            console.log('result.entities:', result?.entities);
+            
+            if (!result) {
+                console.error('displayResult: result参数为空');
+                return;
+            }
+            
+            const entitiesTable = document.getElementById('entities-table');
+            const relationsTable = document.getElementById('relations-table');
+            
+            // 显示实体
+            if (result.entities && result.entities.length > 0) {
+                entitiesTable.innerHTML = `
+                    <h3 style="color: #00d4ff; margin: 20px 0 10px 0;">实体信息</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <thead>
+                            <tr style="background: #1a1a1a;">
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">名称</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">类型</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">置信度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.entities.map(entity => `
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #333;">${entity.name}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${entity.type}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${(entity.confidence * 100).toFixed(1)}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                entitiesTable.innerHTML = '<p style="color: #666;">暂无实体信息</p>';
+            }
+            
+            // 显示关系
+            if (result.relations && result.relations.length > 0) {
+                relationsTable.innerHTML = `
+                    <h3 style="color: #00d4ff; margin: 20px 0 10px 0;">关系信息</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #1a1a1a;">
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">起点</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">关系</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">终点</th>
+                                <th style="padding: 10px; border: 1px solid #333; color: #00d4ff;">置信度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.relations.map(relation => `
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #333;">${relation.source}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${relation.type}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${relation.target}</td>
+                                    <td style="padding: 10px; border: 1px solid #333;">${(relation.confidence * 100).toFixed(1)}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                relationsTable.innerHTML = '<p style="color: #666;">暂无关系信息</p>';
+            }
+        }
+        
+        // 重新提取
+        async function reExtract() {
+            const sessionId = document.getElementById('session-id').value || currentSessionId;
+            const loading = document.getElementById('result-loading');
+            const status = document.getElementById('result-status');
+            
+            if (!sessionId) {
+                showStatus('请输入会话ID', 'error', 'result-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/extract/${sessionId}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('重新提取成功！', 'success', 'result-status');
+                    loadResult();
+                } else {
+                    showStatus(data.detail || data.message || '提取失败', 'error', 'result-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('重新提取失败: ' + error.message, 'error', 'result-status');
+            }
+        }
+        
+        // 图谱功能
+        function initGraph() {
+            try {
+                if (typeof cytoscape === 'undefined') {
+                    showStatus('Cytoscape.js库加载失败，请刷新页面重试', 'error', 'graph-status');
+                    return;
+                }
+                
+                cy = cytoscape({
+                    container: document.getElementById('cy'),
+                    elements: [],
+                    style: [
+                        {
+                            selector: 'node',
+                            style: {
+                                'background-color': '#00d4ff',
+                                'label': 'data(label)',
+                                'text-valign': 'center',
+                                'text-halign': 'center',
+                                'color': '#ffffff',
+                                'font-size': '12px',
+                                'font-weight': 'bold',
+                                'text-outline-width': 2,
+                                'text-outline-color': '#000000',
+                                'width': '60px',
+                                'height': '60px',
+                                'border-width': 3,
+                                'border-color': '#ffffff',
+                                'border-opacity': 0.8
+                            }
+                        },
+                        {
+                            selector: 'node[group="用户"]',
+                            style: {
+                                'background-color': '#00d4ff',
+                                'width': '80px',
+                                'height': '80px'
+                            }
+                        },
+                        {
+                            selector: 'node[group="症状"]',
+                            style: {
+                                'background-color': '#ff0064',
+                                'width': '50px',
+                                'height': '50px'
+                            }
+                        },
+                        {
+                            selector: 'node[group="疾病"]',
+                            style: {
+                                'background-color': '#ffaa00',
+                                'width': '50px',
+                                'height': '50px'
+                            }
+                        },
+                        {
+                            selector: 'node[group="药物"]',
+                            style: {
+                                'background-color': '#00ff88',
+                                'width': '50px',
+                                'height': '50px'
+                            }
+                        },
+                        {
+                            selector: 'node[group="治疗"]',
+                            style: {
+                                'background-color': '#aa44ff',
+                                'width': '50px',
+                                'height': '50px'
+                            }
+                        },
+                        {
+                            selector: 'node[group="检查"]',
+                            style: {
+                                'background-color': '#00ffcc',
+                                'width': '50px',
+                                'height': '50px'
+                            }
+                        },
+                        {
+                            selector: 'edge',
+                            style: {
+                                'width': 3,
+                                'line-color': '#ffffff',
+                                'target-arrow-color': '#ffffff',
+                                'target-arrow-shape': 'triangle',
+                                'curve-style': 'bezier',
+                                'control-point-step-size': 50
+                            }
+                        }
+                    ],
+                    layout: {
+                        name: 'grid',
+                        animate: true,
+                        fit: true,
+                        randomize: false,
+                        rows: undefined,
+                        cols: undefined,
+                        animationDuration: 1000,
+                        stop: function() {
+                            console.log('Grid布局计算完成，图谱已稳定');
+                        }
+                    }
+                });
+                
+                // 添加交互事件
+                cy.on('tap', 'node', function(evt) {
+                    const node = evt.target;
+                    showNodeInfo(node);
+                });
+                
+                cy.on('tap', 'edge', function(evt) {
+                    const edge = evt.target;
+                    showEdgeInfo(edge);
+                });
+                
+                cy.on('grab', 'node', function(evt) {
+                    const node = evt.target;
+                    node.style('border-width', '5px');
+                    node.style('border-color', '#00d4ff');
+                });
+                
+                cy.on('free', 'node', function(evt) {
+                    const node = evt.target;
+                    const group = node.data('group');
+                    let shadowColor = 'rgba(0, 212, 255, 0.5)';
+                    
+                    if (group === '症状') shadowColor = 'rgba(255, 0, 100, 0.5)';
+                    else if (group === '疾病') shadowColor = 'rgba(255, 170, 0, 0.5)';
+                    else if (group === '药物') shadowColor = 'rgba(0, 255, 136, 0.5)';
+                    else if (group === '治疗') shadowColor = 'rgba(170, 68, 255, 0.5)';
+                    else if (group === '检查') shadowColor = 'rgba(0, 255, 204, 0.5)';
+                    
+                    node.style('box-shadow', `0 0 20px ${shadowColor}`);
+                    node.style('border-width', '3px');
+                    
+                    console.log('拖拽结束，节点位置已固定');
+                });
+                
+                cy.on('mouseover', 'node', function(evt) {
+                    const node = evt.target;
+                    node.style('width', '70px');
+                    node.style('height', '70px');
+                });
+                
+                cy.on('mouseout', 'node', function(evt) {
+                    const node = evt.target;
+                    node.style('width', '60px');
+                    node.style('height', '60px');
+                });
+                
+                console.log('图谱初始化成功');
+            } catch (error) {
+                console.error('图谱初始化失败:', error);
+                showStatus('图谱初始化失败: ' + error.message, 'error', 'graph-status');
+            }
+        }
+        
+        async function loadGraph() {
+            const status = document.getElementById('graph-status');
+            
+            try {
+                showStatus('正在加载图谱...', 'info', 'graph-status');
+                
+                const response = await fetch('/graph/default_user');
+                const data = await response.json();
+                
+                if (data.success && data.graph) {
+                    const graph = data.graph;
+                    
+                    if (cy) {
+                        cy.elements().remove();
+                        
+                        if (graph.nodes && graph.nodes.length > 0) {
+                            cy.add(graph.nodes.map(node => ({
+                                data: {
+                                    id: node.id,
+                                    label: showLabels ? node.label : '',
+                                    group: node.group || '未知',
+                                    confidence: node.confidence || 0
+                                }
+                            })));
+                            
+                            if (graph.edges && graph.edges.length > 0) {
+                                cy.add(graph.edges.map(edge => ({
+                                    data: {
+                                        id: edge.id,
+                                        source: edge.source,
+                                        target: edge.target,
+                                        label: showLabels ? edge.label : '',
+                                        type: edge.type || 'RELATION',
+                                        confidence: edge.confidence || 0
+                                    }
+                                })));
+                            }
+                        }
+                        
+                        cy.layout({
+                            name: 'grid',
+                            animate: true,
+                            fit: true,
+                            randomize: false,
+                            rows: undefined,
+                            cols: undefined,
+                            animationDuration: 1200,
+                            stop: function() {
+                                console.log('Grid布局完成，图谱已稳定');
+                            }
+                        }).run();
+                        
+                        showStatus(`图谱加载成功！包含 ${graph.nodes.length} 个节点和 ${graph.edges.length} 条关系`, 'success', 'graph-status');
+                    } else {
+                        showStatus('图谱未初始化', 'error', 'graph-status');
+                    }
+                } else {
+                    showStatus('加载图谱失败: ' + (data.message || '未知错误'), 'error', 'graph-status');
+                }
+            } catch (error) {
+                showStatus('加载图谱失败: ' + error.message, 'error', 'graph-status');
+            }
+        }
+        
+        function resetLayout() {
+            if (!cy) {
+                showStatus('图谱未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            cy.layout({
+                name: 'grid',
+                animate: true,
+                fit: true,
+                randomize: true,
+                rows: undefined,
+                cols: undefined,
+                animationDuration: 1000,
+                stop: function() {
+                    console.log('Grid重新布局完成');
+                }
+            }).run();
+        }
+        
+        function toggleLabels() {
+            if (!cy) {
+                showStatus('图谱未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            showLabels = !showLabels;
+            
+            cy.nodes().forEach(node => {
+                node.style('label', showLabels ? node.data('label') : '');
+            });
+            
+            cy.edges().forEach(edge => {
+                edge.style('label', showLabels ? edge.data('label') : '');
+            });
+            
+            showStatus(showLabels ? '标签已显示' : '标签已隐藏', 'info', 'graph-status');
+        }
+        
+        function togglePhysics() {
+            if (!cy) {
+                showStatus('图谱未初始化', 'error', 'graph-status');
+                return;
+            }
+            
+            physicsEnabled = !physicsEnabled;
+            
+            if (physicsEnabled) {
+                cy.layout({
+                    name: 'grid',
+                    animate: true,
+                    fit: false,
+                    randomize: false,
+                    rows: undefined,
+                    cols: undefined,
+                    animationDuration: 800,
+                    stop: function() {
+                        console.log('Grid布局完成');
+                    }
+                }).run();
+                
+                showStatus('Grid布局已启用 - 稳定的网格排列', 'success', 'graph-status');
+            } else {
+                cy.layout({
+                    name: 'grid',
+                    rows: Math.ceil(Math.sqrt(cy.nodes().length)),
+                    animate: true,
+                    animationDuration: 500
+                }).run();
+                
+                showStatus('物理引擎已禁用 - 使用静态网格布局', 'info', 'graph-status');
+            }
+        }
+        
+        function showNodeInfo(node) {
+            const data = node.data();
+            const info = `节点信息:\nID: ${data.id}\n标签: ${data.label}\n类型: ${data.group}\n置信度: ${(data.confidence * 100).toFixed(1)}%`;
+            alert(info);
+        }
+        
+        function showEdgeInfo(edge) {
+            const data = edge.data();
+            const info = `关系信息:\nID: ${data.id}\n类型: ${data.type}\n起点: ${data.source}\n终点: ${data.target}\n置信度: ${(data.confidence * 100).toFixed(1)}%`;
+            alert(info);
+        }
+        
+        // 健康问答功能
+        async function generateHealthProfile() {
+            const userId = document.getElementById('profile-user-id').value;
+            const loading = document.getElementById('profile-loading');
+            const status = document.getElementById('profile-status');
+            const result = document.getElementById('profile-result');
+            const content = document.getElementById('profile-content');
+            
+            if (!userId.trim()) {
+                showStatus('请输入用户ID', 'error', 'profile-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/health/profile/${userId}`);
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('健康档案生成成功！', 'success', 'profile-status');
+                    content.textContent = data.profile;
+                    result.style.display = 'block';
+                } else {
+                    showStatus(data.message || data.error || '生成失败', 'error', 'profile-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('生成健康档案失败: ' + error.message, 'error', 'profile-status');
+            }
+        }
+        
+        async function askHealthQuestion() {
+            const userId = document.getElementById('qa-user-id').value;
+            const question = document.getElementById('health-question').value;
+            const loading = document.getElementById('qa-loading');
+            const status = document.getElementById('qa-status');
+            const result = document.getElementById('qa-result');
+            const content = document.getElementById('qa-content');
+            
+            if (!userId.trim()) {
+                showStatus('请输入用户ID', 'error', 'qa-status');
+                return;
+            }
+            
+            if (!question.trim()) {
+                showStatus('请输入健康问题', 'error', 'qa-status');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            status.style.display = 'none';
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch(`/health/ask/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({question: question})
+                });
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    showStatus('AI回答成功！', 'success', 'qa-status');
+                    content.textContent = data.answer;
+                    result.style.display = 'block';
+                } else {
+                    showStatus(data.message || data.error || '问答失败', 'error', 'qa-status');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('健康问答失败: ' + error.message, 'error', 'qa-status');
+            }
+        }
+        
+        async function loadHealthStats() {
+            const userId = document.getElementById('profile-user-id').value || 'default_user';
+            const statsGrid = document.getElementById('stats-grid');
+            
+            try {
+                const response = await fetch(`/health/summary/${userId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.statistics;
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_symptoms}</div>
+                            <div class="stat-label">症状</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_diseases}</div>
+                            <div class="stat-label">疾病</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_medications}</div>
+                            <div class="stat-label">药物</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_treatments}</div>
+                            <div class="stat-label">治疗</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_tests}</div>
+                            <div class="stat-label">检查</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_items}</div>
+                            <div class="stat-label">总计</div>
+                        </div>
+                    `;
+                } else {
+                    statsGrid.innerHTML = '<div style="color: #ff0064; text-align: center;">暂无健康数据</div>';
+                }
+            } catch (error) {
+                statsGrid.innerHTML = '<div style="color: #ff0064; text-align: center;">加载统计失败</div>';
+            }
+        }
+        
+        // 显示状态消息
+        function showStatus(message, type, elementId) {
+            const status = document.getElementById(elementId);
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHealthStats();
+        });
+    </script>
+</body>
+</html>

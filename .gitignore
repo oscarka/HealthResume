@@ -21,10 +21,11 @@ wheels/
 *.egg
 MANIFEST
 
-# Virtual Environment
-venv/
-env/
-ENV/
+# Environment variables
+.env
+.env.local
+.env.production
+config.env
 
 # IDE
 .vscode/
@@ -39,14 +40,12 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
 
-# Environment variables
-.env
-config.env
-
-# Database files
+# Database
 *.db
 *.sqlite3
 
-# Backup files
-*-backup.html
+# Temporary files
+tmp/
+temp/

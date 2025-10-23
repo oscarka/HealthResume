@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人健康知识图谱 - vis.js版本</title>
+    <script src="https://unpkg.com/vis-network@9.1.6/dist/vis-network.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #ff00d4, #00ff88, #ffaa00);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .header h1 {
+            color: #ffffff;
+            margin: 0 0 15px 0;
+            font-size: 3em;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .header p {
+            color: #b0b0b0;
+            text-align: center;
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+        
+        .graph-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            position: relative;
+        }
+        
+        #vis-network {
+            width: 100%;
+            height: 700px;
+            border: 2px solid #333;
+            border-radius: 15px;
+            background: #0f0f0f;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+        
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #00d4ff, #ff00d4);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #666, #999);
+            box-shadow: 0 8px 25px rgba(102, 102, 102, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 15px 35px rgba(102, 102, 102, 0.4);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 200, 100, 0.1));
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, rgba(255, 0, 100, 0.2), rgba(200, 0, 80, 0.1));
+            color: #ff0064;
+            border: 1px solid rgba(255, 0, 100, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 100, 0.2);
+        }
+        
+        .status.info {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 180, 220, 0.1));
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .legend {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .legend h3 {
+            margin: 0 0 20px 0;
+            color: #ffffff;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .legend-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        .legend-user { 
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        .legend-symptom { 
+            background: linear-gradient(135deg, #ff0064, #cc0050);
+            box-shadow: 0 5px 15px rgba(255, 0, 100, 0.3);
+        }
+        .legend-disease { 
+            background: linear-gradient(135deg, #ffaa00, #cc8800);
+            box-shadow: 0 5px 15px rgba(255, 170, 0, 0.3);
+        }
+        .legend-medication { 
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+        .legend-treatment { 
+            background: linear-gradient(135deg, #aa44ff, #8833cc);
+            box-shadow: 0 5px 15px rgba(170, 68, 255, 0.3);
+        }
+        .legend-test { 
+            background: linear-gradient(135deg, #00ffcc, #00ccaa);
+            box-shadow: 0 5px 15px rgba(0, 255, 204, 0.3);
+        }
+        
+        .comparison-info {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 212, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comparison-info h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-info p {
+            color: #b0b0b0;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .comparison-link {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .comparison-link:hover {
+            background: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 个人健康知识图谱 - vis.js版本</h1>
+            <p>体验vis.js的流畅拖拽和现代视觉效果</p>
+        </div>
+        
+        <div class="comparison-info">
+            <h3>🔄 对比测试</h3>
+            <p>这是vis.js版本的图谱可视化，你可以对比原版Cytoscape.js的效果</p>
+            <div class="comparison-links">
+                <a href="/static/graph.html" class="comparison-link">📊 原版Cytoscape.js</a>
+                <a href="/static/dashboard.html" class="comparison-link">🏠 返回仪表板</a>
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <div class="controls">
+                <button class="btn" onclick="loadGraph()">🔄 刷新图谱</button>
+                <button class="btn" onclick="resetLayout()">📐 重新布局</button>
+                <button class="btn" onclick="togglePhysics()">⚡ 物理引擎</button>
+                <button class="btn" onclick="changeLayout()">🎨 切换布局</button>
+                <button class="btn" onclick="toggleLabels()">🏷️ 切换标签</button>
+                <a href="/static/index.html" class="btn btn-secondary">📝 上传对话</a>
+                <a href="/static/result.html" class="btn btn-secondary">📊 查看结果</a>
+                <a href="/static/health.html" class="btn btn-secondary">🧠 智能问答</a>
+            </div>
+            
+            <div id="vis-network"></div>
+            
+            <div class="status" id="status"></div>
+            
+            <div class="legend">
+                <h3>🎨 图例说明</h3>
+                <div class="legend-items">
+                    <span class="legend-item legend-user">👤 用户</span>
+                    <span class="legend-item legend-symptom">🩺 症状</span>
+                    <span class="legend-item legend-disease">🏥 疾病</span>
+                    <span class="legend-item legend-medication">💊 药物</span>
+                    <span class="legend-item legend-treatment">🔧 治疗</span>
+                    <span class="legend-item legend-test">🔬 检查</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let network;
+        let nodes;
+        let edges;
+        let showLabels = true;
+        let physicsEnabled = true;
+        let currentLayout = 'hierarchical';
+        
+        // 初始化vis.js网络
+        function initNetwork() {
+            try {
+                // 检查vis.js是否加载
+                if (typeof vis === 'undefined') {
+                    showStatus('vis.js库加载失败，请刷新页面重试', 'error');
+                    return;
+                }
+                
+                // 创建容器
+                const container = document.getElementById('vis-network');
+                
+                // 初始化空数据
+                nodes = new vis.DataSet([]);
+                edges = new vis.DataSet([]);
+                
+                // 网络配置
+                const options = {
+                    nodes: {
+                        shape: 'dot',
+                        size: 20,
+                        font: {
+                            size: 14,
+                            color: '#ffffff',
+                            strokeWidth: 2,
+                            strokeColor: '#000000'
+                        },
+                        borderWidth: 3,
+                        shadow: {
+                            enabled: true,
+                            color: 'rgba(0, 212, 255, 0.5)',
+                            size: 10,
+                            x: 0,
+                            y: 0
+                        },
+                        scaling: {
+                            min: 10,
+                            max: 50,
+                            label: {
+                                enabled: true,
+                                min: 14,
+                                max: 20,
+                                maxVisible: 20,
+                                drawThreshold: 5
+                            }
+                        }
+                    },
+                    edges: {
+                        width: 3,
+                        color: {
+                            color: '#ffffff',
+                            highlight: '#00d4ff',
+                            hover: '#ff00d4'
+                        },
+                        font: {
+                            size: 12,
+                            color: '#ffffff',
+                            strokeWidth: 2,
+                            strokeColor: '#000000'
+                        },
+                        arrows: {
+                            to: {
+                                enabled: true,
+                                scaleFactor: 1.2,
+                                type: 'arrow'
+                            }
+                        },
+                        smooth: {
+                            enabled: true,
+                            type: 'continuous',
+                            roundness: 0.2
+                        },
+                        shadow: {
+                            enabled: true,
+                            color: 'rgba(0, 0, 0, 0.3)',
+                            size: 5,
+                            x: 0,
+                            y: 0
+                        }
+                    },
+                    physics: {
+                        enabled: physicsEnabled,
+                        stabilization: {
+                            enabled: true,
+                            iterations: 200,
+                            updateInterval: 25,
+                            onlyDynamicEdges: false,
+                            fit: true
+                        },
+                        solver: 'forceAtlas2Based',
+                        forceAtlas2Based: {
+                            gravitationalConstant: -80,  // 增加排斥力
+                            centralGravity: 0.005,       // 减少中心引力
+                            springLength: 150,           // 增加弹簧长度
+                            springConstant: 0.05,        // 减少弹簧强度
+                            damping: 0.6,                // 增加阻尼
+                            avoidOverlap: 2              // 增加避免重叠
+                        },
+                        maxVelocity: 30,
+                        minVelocity: 0.2,
+                        timestep: 0.35,
+                        adaptiveTimestep: true
+                    },
+                    interaction: {
+                        dragNodes: true,
+                        dragView: true,
+                        hideEdgesOnDrag: false,
+                        hideEdgesOnZoom: false,
+                        hideNodesOnDrag: false,
+                        hover: true,
+                        hoverConnectedEdges: true,
+                        keyboard: {
+                            enabled: true,
+                            speed: {x: 10, y: 10, zoom: 0.02},
+                            bindToWindow: true
+                        },
+                        multiselect: false,
+                        navigationButtons: true,
+                        selectable: true,
+                        selectConnectedEdges: true,
+                        tooltipDelay: 300,
+                        zoomSpeed: 1,
+                        zoomView: true
+                    },
+                    layout: {
+                        improvedLayout: true,
+                        clusterThreshold: 150
+                    }
+                };
+                
+                // 创建网络
+                network = new vis.Network(container, {nodes: nodes, edges: edges}, options);
+                
+                // 添加事件监听
+                network.on('click', function(params) {
+                    if (params.nodes.length > 0) {
+                        const nodeId = params.nodes[0];
+                        const node = nodes.get(nodeId);
+                        showNodeInfo(node);
+                    } else if (params.edges.length > 0) {
+                        const edgeId = params.edges[0];
+                        const edge = edges.get(edgeId);
+                        showEdgeInfo(edge);
+                    }
+                });
+                
+                network.on('hoverNode', function(params) {
+                    // 鼠标悬停效果
+                    const nodeId = params.node;
+                    const node = nodes.get(nodeId);
+                    if (node) {
+                        nodes.update({
+                            id: nodeId,
+                            size: Math.min(node.size * 1.5, 50),
+                            shadow: {
+                                enabled: true,
+                                color: 'rgba(0, 212, 255, 0.8)',
+                                size: 15
+                            }
+                        });
+                    }
+                });
+                
+                network.on('blurNode', function(params) {
+                    // 恢复原始大小
+                    const nodeId = params.node;
+                    const node = nodes.get(nodeId);
+                    if (node) {
+                        const group = node.group || 'default';
+                        const baseSize = getNodeSize(group);
+                        nodes.update({
+                            id: nodeId,
+                            size: baseSize,
+                            shadow: {
+                                enabled: true,
+                                color: getNodeColor(group),
+                                size: 10
+                            }
+                        });
+                    }
+                });
+                
+                network.on('stabilizationIterationsDone', function() {
+                    console.log('网络稳定化完成');
+                    showStatus('图谱加载完成！', 'success');
+                });
+                
+                console.log('vis.js网络初始化成功');
+            } catch (error) {
+                console.error('vis.js网络初始化失败:', error);
+                showStatus('网络初始化失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 获取节点大小
+        function getNodeSize(group) {
+            const sizes = {
+                'user': 30,
+                '症状': 25,
+                '疾病': 25,
+                '药物': 25,
+                '治疗': 25,
+                '检查': 25,
+                'default': 20
+            };
+            return sizes[group] || sizes['default'];
+        }
+        
+        // 获取节点颜色
+        function getNodeColor(group) {
+            const colors = {
+                'user': 'rgba(0, 212, 255, 0.5)',
+                '症状': 'rgba(255, 0, 100, 0.5)',
+                '疾病': 'rgba(255, 170, 0, 0.5)',
+                '药物': 'rgba(0, 255, 136, 0.5)',
+                '治疗': 'rgba(170, 68, 255, 0.5)',
+                '检查': 'rgba(0, 255, 204, 0.5)',
+                'default': 'rgba(0, 212, 255, 0.5)'
+            };
+            return colors[group] || colors['default'];
+        }
+        
+        // 获取节点背景色
+        function getNodeBackgroundColor(group) {
+            const colors = {
+                'user': '#00d4ff',
+                '症状': '#ff0064',
+                '疾病': '#ffaa00',
+                '药物': '#00ff88',
+                '治疗': '#aa44ff',
+                '检查': '#00ffcc',
+                'default': '#00d4ff'
+            };
+            return colors[group] || colors['default'];
+        }
+        
+        // 加载图谱数据
+        async function loadGraph() {
+            showStatus('正在加载图谱数据...', 'info');
+            
+            try {
+                if (!network) {
+                    showStatus('网络未初始化，请刷新页面重试', 'error');
+                    return;
+                }
+                
+                const response = await fetch('/graph/default_user');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const graph = data.graph;
+                    
+                    // 清空现有数据
+                    nodes.clear();
+                    edges.clear();
+                    
+                    // 添加节点
+                    if (graph.nodes && graph.nodes.length > 0) {
+                        const visNodes = graph.nodes.map(node => ({
+                            id: node.id,
+                            label: showLabels ? node.label : '',
+                            group: node.group || 'default',
+                            size: getNodeSize(node.group),
+                            color: {
+                                background: getNodeBackgroundColor(node.group),
+                                border: '#ffffff',
+                                highlight: {
+                                    background: getNodeBackgroundColor(node.group),
+                                    border: '#00d4ff'
+                                },
+                                hover: {
+                                    background: getNodeBackgroundColor(node.group),
+                                    border: '#ff00d4'
+                                }
+                            },
+                            shadow: {
+                                enabled: true,
+                                color: getNodeColor(node.group),
+                                size: 10
+                            },
+                            font: {
+                                size: 14,
+                                color: '#ffffff',
+                                strokeWidth: 2,
+                                strokeColor: '#000000'
+                            }
+                        }));
+                        
+                        nodes.add(visNodes);
+                    }
+                    
+                    // 添加边
+                    if (graph.edges && graph.edges.length > 0) {
+                        const visEdges = graph.edges.map(edge => ({
+                            id: edge.id,
+                            from: edge.source,
+                            to: edge.target,
+                            label: showLabels ? edge.label : '',
+                            color: {
+                                color: '#ffffff',
+                                highlight: '#00d4ff',
+                                hover: '#ff00d4'
+                            },
+                            font: {
+                                size: 12,
+                                color: '#ffffff',
+                                strokeWidth: 2,
+                                strokeColor: '#000000'
+                            }
+                        }));
+                        
+                        edges.add(visEdges);
+                    }
+                    
+                    // 应用布局 - 使用力导向布局避免聚集
+                    applyLayout('force');
+                    
+                    showStatus(`图谱加载成功！包含 ${graph.nodes.length} 个节点和 ${graph.edges.length} 条关系`, 'success');
+                } else {
+                    showStatus('加载图谱失败: ' + (data.message || '未知错误'), 'error');
+                }
+            } catch (error) {
+                console.error('加载图谱失败:', error);
+                showStatus('加载图谱失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 应用布局
+        function applyLayout(layoutType) {
+            if (!network) return;
+            
+            const layoutOptions = {
+                hierarchical: {
+                    enabled: true,
+                    direction: 'UD',
+                    sortMethod: 'directed',
+                    nodeSpacing: 200,
+                    levelSeparation: 150,
+                    treeSpacing: 200
+                },
+                force: {
+                    enabled: false
+                }
+            };
+            
+            if (layoutType === 'hierarchical') {
+                network.setOptions({
+                    layout: layoutOptions.hierarchical,
+                    physics: {
+                        enabled: false
+                    }
+                });
+            } else {
+                // 力导向布局 - 优化参数避免聚集
+                network.setOptions({
+                    layout: layoutOptions.force,
+                    physics: {
+                        enabled: true,
+                        solver: 'forceAtlas2Based',
+                        stabilization: {
+                            enabled: true,
+                            iterations: 200,
+                            updateInterval: 25,
+                            onlyDynamicEdges: false,
+                            fit: true
+                        },
+                        forceAtlas2Based: {
+                            gravitationalConstant: -80,  // 增加排斥力
+                            centralGravity: 0.005,       // 减少中心引力
+                            springLength: 150,           // 增加弹簧长度
+                            springConstant: 0.05,        // 减少弹簧强度
+                            damping: 0.6,                // 增加阻尼
+                            avoidOverlap: 2              // 增加避免重叠
+                        },
+                        maxVelocity: 30,
+                        minVelocity: 0.2,
+                        timestep: 0.35,
+                        adaptiveTimestep: true
+                    }
+                });
+            }
+        }
+        
+        // 重新布局
+        function resetLayout() {
+            if (!network) {
+                showStatus('网络未初始化', 'error');
+                return;
+            }
+            
+            // 随机化节点位置，让力导向算法重新计算
+            const nodeIds = nodes.getIds();
+            const randomNodes = nodeIds.map(id => ({
+                id: id,
+                x: Math.random() * 800 - 400,  // 随机位置范围
+                y: Math.random() * 600 - 300
+            }));
+            
+            nodes.update(randomNodes);
+            
+            // 强制重新启动物理引擎，产生飘荡效果
+            network.setOptions({
+                physics: {
+                    enabled: true,
+                    solver: 'forceAtlas2Based',
+                    stabilization: {
+                        enabled: true,
+                        iterations: 200,
+                        updateInterval: 25,
+                        onlyDynamicEdges: false,
+                        fit: true
+                    },
+                    forceAtlas2Based: {
+                        gravitationalConstant: -80,  // 增加排斥力
+                        centralGravity: 0.005,       // 减少中心引力
+                        springLength: 150,           // 增加弹簧长度
+                        springConstant: 0.05,        // 减少弹簧强度
+                        damping: 0.6,                // 增加阻尼
+                        avoidOverlap: 2              // 增加避免重叠
+                    },
+                    maxVelocity: 30,
+                    minVelocity: 0.2,
+                    timestep: 0.35,
+                    adaptiveTimestep: true
+                }
+            });
+            
+            // 重新启动稳定化过程
+            network.stabilize();
+            
+            showStatus('布局已重置，正在重新计算...', 'info');
+        }
+        
+        // 切换物理引擎
+        function togglePhysics() {
+            if (!network) {
+                showStatus('网络未初始化', 'error');
+                return;
+            }
+            
+            physicsEnabled = !physicsEnabled;
+            
+            network.setOptions({
+                physics: {
+                    enabled: physicsEnabled,
+                    solver: physicsEnabled ? 'forceAtlas2Based' : 'none',
+                    stabilization: {
+                        enabled: true,
+                        iterations: 200,
+                        updateInterval: 25,
+                        onlyDynamicEdges: false,
+                        fit: true
+                    },
+                    forceAtlas2Based: {
+                        gravitationalConstant: -80,  // 增加排斥力
+                        centralGravity: 0.005,       // 减少中心引力
+                        springLength: 150,           // 增加弹簧长度
+                        springConstant: 0.05,        // 减少弹簧强度
+                        damping: 0.6,                // 增加阻尼
+                        avoidOverlap: 2              // 增加避免重叠
+                    },
+                    maxVelocity: 30,
+                    minVelocity: 0.2,
+                    timestep: 0.35,
+                    adaptiveTimestep: true
+                }
+            });
+            
+            showStatus(physicsEnabled ? '物理引擎已启用' : '物理引擎已禁用', 'info');
+        }
+        
+        // 切换布局
+        function changeLayout() {
+            if (!network) {
+                showStatus('网络未初始化', 'error');
+                return;
+            }
+            
+            currentLayout = currentLayout === 'hierarchical' ? 'force' : 'hierarchical';
+            applyLayout(currentLayout);
+            
+            showStatus(`布局已切换到: ${currentLayout === 'hierarchical' ? '层次布局' : '力导向布局'}`, 'info');
+        }
+        
+        // 切换标签
+        function toggleLabels() {
+            if (!network) {
+                showStatus('网络未初始化', 'error');
+                return;
+            }
+            
+            showLabels = !showLabels;
+            
+            // 更新节点标签
+            const nodeIds = nodes.getIds();
+            const updatedNodes = nodeIds.map(id => {
+                const node = nodes.get(id);
+                return {
+                    id: id,
+                    label: showLabels ? node.label : ''
+                };
+            });
+            nodes.update(updatedNodes);
+            
+            // 更新边标签
+            const edgeIds = edges.getIds();
+            const updatedEdges = edgeIds.map(id => {
+                const edge = edges.get(id);
+                return {
+                    id: id,
+                    label: showLabels ? edge.label : ''
+                };
+            });
+            edges.update(updatedEdges);
+            
+            showStatus(showLabels ? '标签已显示' : '标签已隐藏', 'info');
+        }
+        
+        // 显示节点信息
+        function showNodeInfo(node) {
+            const info = `
+节点信息:
+- ID: ${node.id}
+- 标签: ${node.label}
+- 类型: ${node.group}
+- 置信度: ${(node.confidence * 100).toFixed(1)}%
+            `.trim();
+            alert(info);
+        }
+        
+        // 显示边信息
+        function showEdgeInfo(edge) {
+            const info = `
+关系信息:
+- ID: ${edge.id}
+- 起点: ${edge.from}
+- 终点: ${edge.to}
+- 标签: ${edge.label}
+- 置信度: ${(edge.confidence * 100).toFixed(1)}%
+            `.trim();
+            alert(info);
+        }
+        
+        // 显示状态信息
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，开始初始化vis.js网络...');
+            
+            // 等待一小段时间确保所有脚本都加载完成
+            setTimeout(() => {
+                initNetwork();
+                
+                // 如果初始化成功，加载图谱数据
+                if (network) {
+                    loadGraph();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
