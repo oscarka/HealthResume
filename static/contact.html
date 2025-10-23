@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系我们 - 智康健康科技</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .cta-button {
+            background: #2563eb;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Contact Form Section */
+        .contact-form-section {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #1e293b;
+        }
+
+        .contact-info p {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .contact-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .contact-method:hover {
+            background: #e2e8f0;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            color: #2563eb;
+        }
+
+        .contact-details h3 {
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-details p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        .contact-details a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styles */
+        .contact-form {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-submit {
+            background: #2563eb;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+
+        /* Offices Section */
+        .offices {
+            padding: 6rem 0;
+            background: #f8fafc;
+        }
+
+        .offices h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .offices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .office-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .office-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #2563eb;
+        }
+
+        .office-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .office-address {
+            color: #64748b;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .office-contact {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .faq h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .faq-item {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-white {
+            background: white;
+            color: #2563eb;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #2563eb;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .footer-section a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">智康</div>
+            <ul class="nav-links">
+                <li><a href="/static/index.html">首页</a></li>
+                <li><a href="/static/products.html">产品</a></li>
+                <li><a href="/static/index.html#ai-demo">AI体验</a></li>
+                <li><a href="/static/about.html">关于我们</a></li>
+            </ul>
+            <a href="/static/dashboard.html" class="cta-button">立即体验</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>迈出下一步</h1>
+            <p>告诉我们您要解决的问题，智康专家将帮助您找到最佳解决方案</p>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>联系我们</h2>
+                    <p>
+                        我们很乐意听到您的声音。无论您是想了解我们的产品、寻求技术支持，还是希望与我们合作，我们都随时准备为您提供帮助。
+                    </p>
+                    
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-details">
+                                <h3>邮箱联系</h3>
+                                <p><a href="mailto:info@zhikang.com">info@zhikang.com</a></p>
+                                <p><a href="mailto:support@zhikang.com">support@zhikang.com</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-details">
+                                <h3>电话咨询</h3>
+                                <p><a href="tel:+86-400-123-4567">400-123-4567</a></p>
+                                <p>周一至周五 9:00-18:00</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">💬</div>
+                            <div class="contact-details">
+                                <h3>在线客服</h3>
+                                <p>7×24小时在线支持</p>
+                                <p>即时响应您的需求</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">📱</div>
+                            <div class="contact-details">
+                                <h3>微信客服</h3>
+                                <p>扫码添加客服微信</p>
+                                <p>获取专属服务</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">姓名 *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">姓氏 *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">邮箱 *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">电话</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company">公司/机构</label>
+                            <input type="text" id="company" name="company">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">咨询主题 *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">请选择咨询主题</option>
+                                <option value="product">产品咨询</option>
+                                <option value="demo">申请演示</option>
+                                <option value="partnership">合作洽谈</option>
+                                <option value="support">技术支持</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">详细描述 *</label>
+                            <textarea id="message" name="message" placeholder="请详细描述您的需求或问题..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Offices Section -->
+    <section class="offices">
+        <div class="container">
+            <h2>我们的办公地点</h2>
+            <div class="offices-grid">
+                <div class="office-card">
+                    <div class="office-icon">🏢</div>
+                    <h3>北京总部</h3>
+                    <div class="office-address">
+                        北京市朝阳区<br>
+                        国贸大厦A座15层<br>
+                        100000
+                    </div>
+                    <div class="office-contact">
+                        +86-10-1234-5678
+                    </div>
+                </div>
+                
+                <div class="office-card">
+                    <div class="office-icon">🏢</div>
+                    <h3>上海分公司</h3>
+                    <div class="office-address">
+                        上海市浦东新区<br>
+                        陆家嘴金融贸易区<br>
+                        200000
+                    </div>
+                    <div class="office-contact">
+                        +86-21-1234-5678
+                    </div>
+                </div>
+                
+                <div class="office-card">
+                    <div class="office-icon">🏢</div>
+                    <h3>深圳研发中心</h3>
+                    <div class="office-address">
+                        深圳市南山区<br>
+                        科技园南区<br>
+                        518000
+                    </div>
+                    <div class="office-contact">
+                        +86-755-1234-5678
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <h2>常见问题</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">如何开始使用智康健康知识图谱系统？</div>
+                    <div class="faq-answer">
+                        您可以通过我们的官网注册账户，上传您的健康对话记录，系统将自动为您构建个人健康知识图谱。我们也提供任我行的虚拟体验，让您先了解系统功能。
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">数据安全如何保障？</div>
+                    <div class="faq-answer">
+                        我们采用端到端加密技术，符合国家相关法规要求，所有数据都经过严格的安全保护，确保您的隐私信息不会泄露。
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">支持哪些类型的健康数据？</div>
+                    <div class="faq-answer">
+                        目前支持医患对话记录、体检报告、用药记录等多种格式的健康数据，未来还将支持更多数据源。
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">如何获得技术支持？</div>
+                    <div class="faq-answer">
+                        我们提供7×24小时在线技术支持，您可以通过邮箱、电话或在线客服联系我们，我们将在最短时间内为您解决问题。
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">是否支持API集成？</div>
+                    <div class="faq-answer">
+                        是的，我们提供完整的API接口，支持与医院信息系统、电子病历系统等进行集成，实现数据的无缝对接。
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">如何申请产品演示？</div>
+                    <div class="faq-answer">
+                        您可以通过联系我们页面填写演示申请表单，我们的销售团队将安排专业的产品演示，为您详细介绍系统功能和使用方法。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>准备开始了吗？</h2>
+            <p>立即体验智康健康知识图谱系统，开启您的智能健康管理之旅</p>
+            <div class="cta-buttons">
+                <a href="/static/ren-woxing-demo.html" class="btn btn-white">体验AI健康分析</a>
+                <a href="/static/dashboard.html" class="btn btn-outline">进入系统</a>
+                <a href="/static/products.html" class="btn btn-outline">了解产品</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>产品</h3>
+                    <a href="/static/products.html">智能健康档案</a>
+                    <a href="/static/index.html#ai-demo">AI体验</a>
+                    <a href="/static/dashboard.html">系统演示</a>
+                </div>
+                <div class="footer-section">
+                    <h3>公司</h3>
+                    <a href="/static/about.html">关于我们</a>
+                    <a href="#contact">联系我们</a>
+                    <a href="#">加入我们</a>
+                </div>
+                <div class="footer-section">
+                    <h3>支持</h3>
+                    <a href="#">帮助中心</a>
+                    <a href="#">API文档</a>
+                    <a href="#">开发者资源</a>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <a href="mailto:info@zhikang.com">info@zhikang.com</a>
+                    <a href="tel:+86-400-123-4567">400-123-4567</a>
+                    <a href="#">在线客服</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 智康. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 表单提交处理
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // 简单的表单验证
+            if (!data.firstName || !data.lastName || !data.email || !data.subject || !data.message) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 模拟提交成功
+            alert('感谢您的咨询！我们将在24小时内回复您。');
+            this.reset();
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.background = '#fff';
+                header.style.backdropFilter = 'none';
+            }
+        });
+
+        // FAQ 展开/收起效果
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const answer = this.querySelector('.faq-answer');
+                if (answer.style.display === 'none') {
+                    answer.style.display = 'block';
+                } else {
+                    answer.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

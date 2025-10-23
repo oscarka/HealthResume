@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>对话上传 - 个人健康知识图谱系统</title>
+    <title>健康数字人 - 个人健康知识图谱系统</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,269 +14,2975 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #000000;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #a0a0a0;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #00ff88;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #000000;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: transparent;
+            color: white;
+            padding: 12rem 0 8rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: none !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            opacity: 0;
+            animation: none;
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            /* 调试信息：确保内容容器透明 */
+            background-color: transparent !important;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: #00ff88;
+            position: relative;
+            z-index: 2;
+            background: transparent;
+            background-color: transparent;
+            background-image: none;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #000000;
+            padding: 1.2rem 2.5rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.5);
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 2.5rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.8);
+            transform: translateY(-3px);
+            color: #00ff88;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+            padding: 8rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(0,255,136,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .stats-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats h2 {
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 60px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+        
+        /* AI Demo Section */
+        .ai-demo {
+            padding: 10rem 0;
+            background: #000000;
+            position: relative;
+        }
+
+        .ai-demo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
+        }
+
+        .ai-demo-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .ai-demo h2 {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .ai-demo-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            margin-bottom: 5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .demo-card {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 3rem;
+            border-radius: 24px;
+            text-align: center;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .demo-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .demo-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 255, 136, 0.3));
+        }
+
+        .demo-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .demo-card p {
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .demo-card .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #000000;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .demo-card .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Interactive Demo Section */
+        .interactive-demo {
+            padding: 8rem 0;
+            background: linear-gradient(135deg, #000000 0%, #111111 100%);
+            position: relative;
+        }
+
+        .interactive-demo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="circuit" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M10,10 L70,10 L70,70 L10,70 Z M20,20 L60,20 L60,60 L20,60 Z" fill="none" stroke="rgba(0,255,136,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23circuit)"/></svg>');
+            opacity: 0.4;
+        }
+
+        .demo-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .demo-header h2 {
+            font-size: 3rem;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .demo-header p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .demo-container {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 24px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .demo-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .demo-tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: #a0a0a0;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .demo-tab.active {
+            color: #00ff88;
+            border-bottom-color: #00ff88;
+        }
+
+        .demo-tab:hover {
+            color: #ffffff;
+        }
+
+        .demo-panel {
+            display: none;
+        }
+
+        .demo-panel.active {
+            display: block;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .demo-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .demo-input::placeholder {
+            color: #666;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #000000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+            margin-right: 1rem;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .demo-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            display: none;
+        }
+
+        .demo-result.show {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .demo-result h4 {
+            color: #00ff88;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .demo-result-content {
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        .demo-examples {
+            margin-top: 2rem;
+        }
+
+        .demo-examples h4 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .example-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            background: transparent;
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .example-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: #00ff88;
+        }
+
+        /* System Screenshots Section */
+        .screenshots {
+            padding: 8rem 0;
+            background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+            position: relative;
+        }
+
+        .screenshots::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="tech" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="2" fill="rgba(0,255,136,0.1)"/><path d="M0,30 L60,30 M30,0 L30,60" stroke="rgba(0,255,136,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23tech)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .screenshots-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .screenshots h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .screenshots-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .screenshot-item {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .screenshot-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .screenshot-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 60px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .screenshot-placeholder {
+            height: 250px;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .screenshot-mockup {
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mockup-header {
+            height: 40px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            position: relative;
+        }
+
+        .mockup-title {
+            color: #000000;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .mockup-content {
+            padding: 20px;
+            height: calc(100% - 40px);
+            background: #111111;
+            position: relative;
+        }
+
+        .mockup-sidebar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 100%;
+            background: #1a1a1a;
+            border-right: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .mockup-main {
+            margin-left: 60px;
+            height: 100%;
+            padding: 15px;
+        }
+
+        .mockup-chart {
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mockup-chart::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(90deg, 
+                rgba(0, 255, 136, 0.3) 0%, 
+                rgba(0, 255, 136, 0.6) 20%, 
+                rgba(0, 212, 255, 0.6) 40%, 
+                rgba(0, 255, 136, 0.4) 60%, 
+                rgba(0, 212, 255, 0.3) 80%, 
+                rgba(0, 255, 136, 0.2) 100%);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .mockup-nodes {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mockup-node {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 50%;
+            border: 2px solid rgba(0, 255, 136, 0.5);
+            position: relative;
+        }
+
+        .mockup-node::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+        }
+
+        .mockup-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .mockup-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(0, 255, 136, 0.4);
+            transform-origin: left center;
+        }
+
+        .mockup-data {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .mockup-data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.7rem;
+            color: #a0a0a0;
+        }
+
+        .mockup-data-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .mockup-data-label {
+            color: #00ff88;
+        }
+
+        .mockup-data-value {
+            color: #ffffff;
+        }
+
+        .mockup-mobile {
+            width: 80px;
+            height: 140px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .mockup-mobile-header {
+            height: 25px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            border-radius: 13px 13px 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 40px;
-            width: 90%;
-            max-width: 800px;
+
+        .mockup-mobile-content {
+            padding: 10px;
+            height: calc(100% - 25px);
+            background: #111111;
+            border-radius: 0 0 13px 13px;
         }
-        
-        h1 {
+
+        .mockup-mobile-item {
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 4px;
+            padding: 5px;
+            margin-bottom: 5px;
+            font-size: 0.6rem;
+            color: #00ff88;
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 300;
         }
-        
-        .form-group {
-            margin-bottom: 25px;
+
+        .mockup-mobile-item:last-child {
+            margin-bottom: 0;
         }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
+
+        /* Mockup Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
-        
-        textarea {
-            width: 100%;
-            min-height: 300px;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: inherit;
-            resize: vertical;
-            transition: border-color 0.3s ease;
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-        
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        
-        .example {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #666;
+
+        .mockup-node {
+            animation: pulse 2s ease-in-out infinite;
         }
-        
-        .example-title {
+
+        .mockup-node:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .mockup-node:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        .mockup-node:nth-child(4) {
+            animation-delay: 1.5s;
+        }
+
+        .mockup-line {
+            animation: fadeIn 1s ease-in-out infinite alternate;
+        }
+
+        .mockup-chart::before {
+            animation: slideIn 2s ease-in-out infinite alternate;
+        }
+
+        .mockup-data-item {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .mockup-data-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .mockup-data-item:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .mockup-mobile-item {
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .mockup-mobile-item:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .mockup-mobile-item:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        .mockup-mobile-item:nth-child(4) {
+            animation-delay: 1.5s;
+        }
+
+        .screenshot-info {
+            padding: 2rem;
+        }
+
+        .screenshot-title {
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .screenshot-description {
+            color: #a0a0a0;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .screenshot-features {
+            list-style: none;
+        }
+
+        .screenshot-features li {
+            color: #a0a0a0;
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .screenshot-features li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-size: 0.8rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 8rem 0;
+            background: linear-gradient(135deg, #000000 0%, #111111 100%);
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="waves" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0,50 Q25,0 50,50 T100,50" fill="none" stroke="rgba(0,255,136,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23waves)"/></svg>');
+            opacity: 0.4;
+        }
+
+        .features-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .features h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .features-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 60px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 255, 136, 0.3));
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-description {
+            color: #a0a0a0;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .feature-highlights {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-highlights li {
+            color: #a0a0a0;
+            padding: 0.8rem 0;
+            position: relative;
+            padding-left: 2rem;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .feature-highlights li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-highlights li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00ff88;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .products {
+            background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+            padding: 10rem 0;
+            position: relative;
+        }
+
+        .products::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(0,255,136,0.1)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23dots)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .products-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .products h2 {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .products-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            margin-bottom: 5rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .product-card {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            position: relative;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .product-header {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .product-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 255, 136, 0.3));
+        }
+
+        .product-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .product-subtitle {
+            opacity: 0.8;
+            color: #a0a0a0;
+            font-size: 1rem;
+        }
+
+        .product-content {
+            padding: 3rem 2rem;
+        }
+
+        .product-description {
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .product-features li {
+            padding: 0.8rem 0;
+            color: #a0a0a0;
+            position: relative;
+            padding-left: 2rem;
+            font-size: 1rem;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .product-cta {
+            margin-top: 2rem;
         }
         
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
             width: 100%;
+            font-size: 1rem;
         }
-        
-        .btn:hover {
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #000000;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.5);
         }
-        
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+
+        .btn-secondary {
+            background: transparent;
+            color: #00ff88;
+            border: 2px solid rgba(0, 255, 136, 0.5);
         }
-        
-        .status {
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 1);
+            color: #ffffff;
+        }
+
+        /* Compliance Section */
+        .compliance {
+            padding: 8rem 0;
+            background: linear-gradient(135deg, #000000 0%, #111111 100%);
             text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: 500;
+            position: relative;
+        }
+
+        .compliance::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="hex" width="60" height="52" patternUnits="userSpaceOnUse"><polygon points="30,2 58,15 58,37 30,50 2,37 2,15" fill="none" stroke="rgba(0,255,136,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23hex)"/></svg>');
+            opacity: 0.4;
+        }
+
+        .compliance-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .compliance h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .compliance-subtitle {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
         
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
         }
-        
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+
+        .compliance-item {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .status.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+
+        .compliance-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
         }
-        
-        .char-count {
-            text-align: right;
-            color: #666;
-            font-size: 14px;
-            margin-top: 5px;
+
+        .compliance-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
         }
-        
-        .loading {
-            display: none;
+
+        .compliance-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .compliance-item p {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #000000 0%, #111111 100%);
+            color: white;
+            padding: 6rem 0 2rem;
+            position: relative;
+            border-top: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="circuit" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M20,20 L80,20 L80,80 L20,80 Z M30,30 L70,30 L70,70 L30,70 Z" fill="none" stroke="rgba(0,255,136,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23circuit)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            color: #a0a0a0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: #00ff88;
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(0, 255, 136, 0.1);
+            padding-top: 2rem;
             text-align: center;
-            margin-top: 20px;
+            color: #a0a0a0;
+            position: relative;
+            z-index: 2;
+            font-size: 0.9rem;
         }
-        
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+
+        /* Advanced Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .animate-slide-left {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .animate-slide-right {
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        /* Scroll animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .stats h2 {
+                font-size: 2.5rem;
+            }
+            
+            .ai-demo h2 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 10rem 0 6rem;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats {
+                padding: 6rem 0;
+            }
+
+            .stats h2 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 2rem;
+            }
+
+            .stat-item {
+                padding: 2rem 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 3rem;
+            }
+
+            .ai-demo {
+                padding: 8rem 0;
+            }
+
+            .ai-demo h2 {
+                font-size: 2.5rem;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .demo-card {
+                padding: 2rem;
+            }
+
+            .demo-icon {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .demo-card h3 {
+                font-size: 1.5rem;
+            }
+
+            .screenshot-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .screenshot-item {
+                margin-bottom: 2rem;
+            }
+
+            .screenshot-placeholder {
+                height: 200px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .feature-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .feature-icon {
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">智康</div>
+            <ul class="nav-links">
+                <li><a href="#interactive-demo">AI体验</a></li>
+                <li><a href="#screenshots">系统展示</a></li>
+                <li><a href="#features">功能特色</a></li>
+                <li><a href="#products">产品</a></li>
+                <li><a href="#about">关于我们</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+            <a href="/static/dashboard.html" class="cta-button">立即体验</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
     <div class="container">
-        <h1>对话上传</h1>
-        
-        <div class="example">
-            <div class="example-title">对话格式示例：</div>
-            <div>患者：我最近经常头痛，特别是早上起床的时候。<br>
-            医生：头痛多久了？有没有其他症状？<br>
-            患者：大概一周了，还伴有发热和咳嗽。<br>
-            医生：听起来像是感冒引起的症状，建议多休息，多喝水。</div>
-        </div>
-        
-        <form id="uploadForm">
-            <div class="form-group">
-                <label for="conversation">请输入医患对话内容：</label>
-                <textarea 
-                    id="conversation" 
-                    name="conversation" 
-                    placeholder="请在此输入医患对话内容..."
-                    required
-                ></textarea>
-                <div class="char-count" id="charCount">0 字符</div>
+            <div class="hero-content">
+                <h1>帮助每位患者成为最优化版本的自己</h1>
+                <p>智康拥有并运营领先的数字和AI驱动的健康产品，由智康云平台提供支持，包括个人健康档案、智能分析、远程监测等。所有产品都采用AI驱动、软件定义和联邦化的运营模式。</p>
+                <div class="hero-buttons">
+                    <a href="#interactive-demo" class="btn-primary">体验AI健康分析</a>
+                    <a href="/static/dashboard.html" class="btn-secondary">进入系统</a>
+                </div>
             </div>
-            
-            <button type="submit" class="btn" id="submitBtn">
-                上传对话
-            </button>
-        </form>
-        
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="/static/graph.html" style="display: inline-block; margin: 0 10px; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 25px; transition: all 0.3s ease;">🧠 查看图谱</a>
-            <a href="/static/result.html" style="display: inline-block; margin: 0 10px; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 25px; transition: all 0.3s ease;">📊 查看结果</a>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-content">
+                <h2>我们的产品已支持全球近1000万用户</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">1000万+</div>
+                        <div class="stat-label">用户受益</div>
+        </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">医疗机构合作</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">系统可用性</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">全天候服务</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Demo Section -->
+    <section class="ai-demo" id="ai-demo">
+        <div class="container">
+            <div class="ai-demo-content">
+                <h2>智康智能 - AI不是功能，而是我们的基础</h2>
+                <p class="ai-demo-subtitle">
+                    我们以AI为引领——不仅是为了自动化，更是为了放大人类关怀。通过智康智能，我们构建了改变医疗工作方式的工具。
+                </p>
+                
+                <div class="demo-grid">
+                    <div class="demo-card">
+                        <div class="demo-icon">🎭</div>
+                        <h3>虚拟人物体验</h3>
+                        <p>体验任我行的健康档案，了解AI如何分析复杂健康问题</p>
+                        <a href="/static/ren-woxing-demo.html" class="btn-primary">体验任我行</a>
+            </div>
+                    <div class="demo-card">
+                        <div class="demo-icon">📊</div>
+                        <h3>知识图谱可视化</h3>
+                        <p>直观展示健康实体之间的关系，让复杂信息一目了然</p>
+                        <a href="/static/graph.html" class="btn-primary">查看图谱</a>
+                    </div>
+                    <div class="demo-card">
+                        <div class="demo-icon">🤖</div>
+                        <h3>智能健康问答</h3>
+                        <p>基于个人健康数据，提供个性化的健康建议和风险预警</p>
+                        <a href="/static/health.html" class="btn-primary">开始问答</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section class="interactive-demo" id="interactive-demo">
+        <div class="container">
+            <div class="demo-content">
+                <div class="demo-header">
+                    <h2>立即体验AI健康分析</h2>
+                    <p>上传您的健康对话或体检报告，让AI为您生成个人健康知识图谱和健康简历</p>
+                </div>
+                
+                <div class="demo-container">
+                    <div class="demo-tabs">
+                        <button class="demo-tab active" data-tab="upload">上传对话</button>
+                        <button class="demo-tab" data-tab="question">健康问答</button>
+                        <button class="demo-tab" data-tab="demo">虚拟体验</button>
         </div>
         
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div>正在上传...</div>
+                    <!-- 上传对话面板 -->
+                    <div class="demo-panel active" id="upload-panel">
+                        <textarea class="demo-input" placeholder="请粘贴您的健康对话内容，例如：医生：您最近有什么不适吗？患者：我经常感到疲劳，睡眠质量也不好..."></textarea>
+                        <button class="demo-button" onclick="analyzeConversation()">分析对话</button>
+                        <button class="demo-button" onclick="generateResume()">生成健康简历</button>
+                        
+                        <div class="demo-examples">
+                            <h4>示例对话（点击直接填入）：</h4>
+                            <div class="example-buttons">
+                                <button class="example-btn" onclick="loadExample('fatigue')">疲劳症状</button>
+                                <button class="example-btn" onclick="loadExample('sleep')">睡眠问题</button>
+                                <button class="example-btn" onclick="loadExample('diet')">饮食咨询</button>
+                                <button class="example-btn" onclick="loadExample('exercise')">运动建议</button>
+                                <button class="example-btn" onclick="loadExample('headache')">头痛问题</button>
+                                <button class="example-btn" onclick="loadExample('stomach')">胃部不适</button>
+                                <button class="example-btn" onclick="loadExample('heart')">心脏症状</button>
+                                <button class="example-btn" onclick="loadExample('diabetes')">糖尿病管理</button>
+                            </div>
         </div>
         
-        <div class="status" id="status" style="display: none;"></div>
-        
-        <div class="navigation" style="text-align: center; margin-top: 30px;">
-            <a href="/static/result.html" style="color: #667eea; text-decoration: none; margin: 0 15px; padding: 10px 20px; border-radius: 20px; transition: all 0.3s ease; display: inline-block;">📊 查看结果</a>
-            <a href="/static/graph.html" style="color: #667eea; text-decoration: none; margin: 0 15px; padding: 10px 20px; border-radius: 20px; transition: all 0.3s ease; display: inline-block;">🕸️ 查看图谱</a>
-            <a href="/static/health.html" style="color: #667eea; text-decoration: none; margin: 0 15px; padding: 10px 20px; border-radius: 20px; transition: all 0.3s ease; display: inline-block;">🧠 智能问答</a>
+                        <div class="demo-result" id="upload-result">
+                            <h4>分析结果：</h4>
+                            <div class="demo-result-content" id="upload-content"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 健康问答面板 -->
+                    <div class="demo-panel" id="question-panel">
+                        <textarea class="demo-input" placeholder="请输入您的健康问题，例如：我最近总是感到疲劳，可能是什么原因？"></textarea>
+                        <button class="demo-button" onclick="askQuestion()">AI问答</button>
+                        
+                        <div class="demo-examples">
+                            <h4>常见问题（点击直接填入）：</h4>
+                            <div class="example-buttons">
+                                <button class="example-btn" onclick="loadQuestion('fatigue')">疲劳原因</button>
+                                <button class="example-btn" onclick="loadQuestion('sleep')">改善睡眠</button>
+                                <button class="example-btn" onclick="loadQuestion('diet')">健康饮食</button>
+                                <button class="example-btn" onclick="loadQuestion('exercise')">运动建议</button>
+                                <button class="example-btn" onclick="loadQuestion('headache')">头痛原因</button>
+                                <button class="example-btn" onclick="loadQuestion('stomach')">胃部保养</button>
+                                <button class="example-btn" onclick="loadQuestion('heart')">心脏健康</button>
+                                <button class="example-btn" onclick="loadQuestion('diabetes')">血糖控制</button>
+                                <button class="example-btn" onclick="loadQuestion('weight')">减肥方法</button>
+                                <button class="example-btn" onclick="loadQuestion('stress')">压力缓解</button>
+                                <button class="example-btn" onclick="loadQuestion('eyes')">护眼方法</button>
+                                <button class="example-btn" onclick="loadQuestion('back')">腰背保健</button>
         </div>
     </div>
+                        
+                        <div class="demo-result" id="question-result">
+                            <h4>AI回答：</h4>
+                            <div class="demo-result-content" id="question-content"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 虚拟体验面板 -->
+                    <div class="demo-panel" id="demo-panel">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <h3 style="color: #ffffff; margin-bottom: 1rem;">体验任我行的健康档案</h3>
+                            <p style="color: #a0a0a0; margin-bottom: 2rem;">基于金庸小说《笑傲江湖》中任我行的经历，AI分析了他的健康问题和风险因素</p>
+                            <button class="demo-button" onclick="loadRenWoxingDemo()">查看任我行档案</button>
+                        </div>
+                        
+                        <div class="demo-result" id="demo-result">
+                            <h4>虚拟人物档案：</h4>
+                            <div class="demo-result-content" id="demo-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Screenshots Section -->
+    <section class="screenshots" id="screenshots">
+        <div class="container">
+            <div class="screenshots-content">
+                <h2>系统界面展示</h2>
+                <p class="screenshots-subtitle">
+                    直观了解智康系统的核心功能和用户界面，体验AI驱动的健康分析流程
+                </p>
+                
+                <div class="screenshot-grid">
+                    <div class="screenshot-item">
+                        <div class="screenshot-placeholder">
+                            <div class="screenshot-mockup">
+                                <div class="mockup-header">
+                                    <div class="mockup-title">智康知识图谱</div>
+                                </div>
+                                <div class="mockup-content">
+                                    <div class="mockup-sidebar"></div>
+                                    <div class="mockup-main">
+                                        <div class="mockup-nodes">
+                                            <div class="mockup-node"></div>
+                                            <div class="mockup-node"></div>
+                                            <div class="mockup-node"></div>
+                                            <div class="mockup-node"></div>
+                                        </div>
+                                        <div class="mockup-lines">
+                                            <div class="mockup-line" style="top: 50px; left: 30px; width: 40px; transform: rotate(30deg);"></div>
+                                            <div class="mockup-line" style="top: 60px; left: 70px; width: 35px; transform: rotate(-20deg);"></div>
+                                            <div class="mockup-line" style="top: 45px; left: 110px; width: 30px; transform: rotate(45deg);"></div>
+                                        </div>
+                                        <div class="mockup-data">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">症状节点:</span>
+                                                <span class="mockup-data-value">12</span>
+                                            </div>
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">关系数:</span>
+                                                <span class="mockup-data-value">28</span>
+                                            </div>
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">风险等级:</span>
+                                                <span class="mockup-data-value">中等</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="screenshot-info">
+                            <h3 class="screenshot-title">知识图谱可视化</h3>
+                            <p class="screenshot-description">
+                                基于Neo4j图数据库构建的个人健康知识图谱，直观展示健康实体之间的关系和影响
+                            </p>
+                            <ul class="screenshot-features">
+                                <li>实体关系可视化</li>
+                                <li>交互式图谱探索</li>
+                                <li>动态关系分析</li>
+                                <li>多维度数据展示</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="screenshot-item">
+                        <div class="screenshot-placeholder">
+                            <div class="screenshot-mockup">
+                                <div class="mockup-header">
+                                    <div class="mockup-title">健康简历生成</div>
+                                </div>
+                                <div class="mockup-content">
+                                    <div class="mockup-sidebar"></div>
+                                    <div class="mockup-main">
+                                        <div class="mockup-data">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">姓名:</span>
+                                                <span class="mockup-data-value">张三</span>
+                                            </div>
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">年龄:</span>
+                                                <span class="mockup-data-value">35岁</span>
+                                            </div>
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">主要症状:</span>
+                                                <span class="mockup-data-value">疲劳、失眠</span>
+                                            </div>
+                                        </div>
+                                        <div class="mockup-chart"></div>
+                                        <div class="mockup-data">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">风险评分:</span>
+                                                <span class="mockup-data-value">6.5/10</span>
+                                            </div>
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">建议:</span>
+                                                <span class="mockup-data-value">改善睡眠</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="screenshot-info">
+                            <h3 class="screenshot-title">健康简历生成</h3>
+                            <p class="screenshot-description">
+                                AI自动分析健康对话，提取关键信息并生成结构化的个人健康档案
+                            </p>
+                            <ul class="screenshot-features">
+                                <li>智能信息提取</li>
+                                <li>结构化数据整理</li>
+                                <li>风险评估分析</li>
+                                <li>个性化建议生成</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="screenshot-item">
+                        <div class="screenshot-placeholder">
+                            <div class="screenshot-mockup">
+                                <div class="mockup-header">
+                                    <div class="mockup-title">AI健康问答</div>
+                                </div>
+                                <div class="mockup-content">
+                                    <div class="mockup-sidebar"></div>
+                                    <div class="mockup-main">
+                                        <div class="mockup-data">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">用户:</span>
+                                                <span class="mockup-data-value">我经常疲劳</span>
+                                            </div>
+                                        </div>
+                                        <div class="mockup-data" style="background: rgba(0, 255, 136, 0.1);">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">AI:</span>
+                                                <span class="mockup-data-value">建议检查睡眠</span>
+                                            </div>
+                                        </div>
+                                        <div class="mockup-data">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">相关症状:</span>
+                                                <span class="mockup-data-value">失眠、压力</span>
+                                            </div>
+                                        </div>
+                                        <div class="mockup-chart"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="screenshot-info">
+                            <h3 class="screenshot-title">AI健康问答</h3>
+                            <p class="screenshot-description">
+                                基于个人健康数据的智能问答系统，提供个性化的健康建议和风险预警
+                            </p>
+                            <ul class="screenshot-features">
+                                <li>自然语言理解</li>
+                                <li>个性化回答生成</li>
+                                <li>上下文关联分析</li>
+                                <li>实时风险评估</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="screenshot-item">
+                        <div class="screenshot-placeholder">
+                            <div class="screenshot-mockup">
+                                <div class="mockup-header">
+                                    <div class="mockup-title">健康趋势分析</div>
+                                </div>
+                                <div class="mockup-content">
+                                    <div class="mockup-sidebar"></div>
+                                    <div class="mockup-main">
+                                        <div class="mockup-chart"></div>
+                                        <div class="mockup-data">
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">本周趋势:</span>
+                                                <span class="mockup-data-value">↗ 上升</span>
+                                            </div>
+                                            <div class="mockup-data-item">
+                                                <span class="mockup-data-label">预测:</span>
+                                                <span class="mockup-data-value">持续改善</span>
+                                            </div>
+                                        </div>
+                                        <div class="mockup-mobile">
+                                            <div class="mockup-mobile-header"></div>
+                                            <div class="mockup-mobile-content">
+                                                <div class="mockup-mobile-item">心率</div>
+                                                <div class="mockup-mobile-item">血压</div>
+                                                <div class="mockup-mobile-item">睡眠</div>
+                                                <div class="mockup-mobile-item">运动</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="screenshot-info">
+                            <h3 class="screenshot-title">健康趋势分析</h3>
+                            <p class="screenshot-description">
+                                多维度健康数据分析和趋势预测，帮助用户了解健康状况变化
+                            </p>
+                            <ul class="screenshot-features">
+                                <li>时间序列分析</li>
+                                <li>趋势预测模型</li>
+                                <li>异常检测预警</li>
+                                <li>可视化图表展示</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="features-content">
+                <h2>核心功能特色</h2>
+                <p class="features-subtitle">
+                    智康系统集成了最先进的AI技术和医疗知识，为用户提供全方位的健康管理解决方案
+                </p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3 class="feature-title">AI智能分析</h3>
+                        <p class="feature-description">
+                            基于DeepSeek大语言模型，实现智能健康信息提取和分析
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>自然语言处理</li>
+                            <li>实体关系识别</li>
+                            <li>语义理解分析</li>
+                            <li>智能推理判断</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <h3 class="feature-title">知识图谱构建</h3>
+                        <p class="feature-description">
+                            基于Neo4j图数据库，构建个人健康知识图谱
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>实体关系建模</li>
+                            <li>图谱可视化展示</li>
+                            <li>关系推理分析</li>
+                            <li>动态图谱更新</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">数据存储管理</h3>
+                        <p class="feature-description">
+                            采用MongoDB和Neo4j双数据库架构，确保数据安全可靠
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>文档数据存储</li>
+                            <li>图数据管理</li>
+                            <li>数据备份恢复</li>
+                            <li>高可用性保障</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">实时处理能力</h3>
+                        <p class="feature-description">
+                            支持实时健康数据分析和处理，快速响应用户需求
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>异步任务处理</li>
+                            <li>实时数据更新</li>
+                            <li>快速响应机制</li>
+                            <li>高并发支持</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">隐私安全保护</h3>
+                        <p class="feature-description">
+                            严格的数据隐私保护机制，确保用户健康信息安全
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>数据加密存储</li>
+                            <li>访问权限控制</li>
+                            <li>隐私合规管理</li>
+                            <li>安全审计日志</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3 class="feature-title">云端部署架构</h3>
+                        <p class="feature-description">
+                            基于Docker容器化部署，支持云端扩展和弹性伸缩
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>容器化部署</li>
+                            <li>云端弹性伸缩</li>
+                            <li>负载均衡支持</li>
+                            <li>自动化运维</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="products-content">
+                <h2>梦想、构建并变革护理和研究</h2>
+                <p class="products-subtitle">
+                    从快速构建健康超级应用、监管解决方案(SaMD)和远程患者监测(RPM)工具——包括虚拟病房和家庭医院模式——到启动AI优先的筛查和诊断工具、分诊、自动化咨询、预约预订、消息传递、文档交付和教育活动。从托管AI算法到支持临床试验数据捕获、访问无限的合作伙伴生态系统，以及随时随地连接患者——智康云平台(HCP)驱动着这一切。
+                </p>
+            
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-icon">📋</div>
+                    <h3>智能健康档案</h3>
+                    <p>自动从医患对话中提取关键健康信息，构建个人健康知识图谱</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🔍</div>
+                    <h3>健康风险分析</h3>
+                    <p>基于历史数据和AI算法，提供个性化的健康风险评估和预警</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">📱</div>
+                    <h3>远程健康监测</h3>
+                    <p>实时监测患者健康状况，提供及时的医疗建议和干预</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🏥</div>
+                    <h3>医疗机构集成</h3>
+                    <p>与医院系统无缝集成，提升医疗工作效率和患者体验</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compliance Section -->
+    <section class="compliance">
+        <div class="container">
+            <div class="compliance-content">
+                <h2>符合最高监管标准——让您专注于护理</h2>
+                <p class="compliance-subtitle">
+                    在四大洲获得监管和合规批准，HCP正在为安全且可扩展的全球健康部署设定新标准。
+                </p>
+            
+            <div class="compliance-grid">
+                <div class="compliance-item">
+                    <h4>国家药监局认证</h4>
+                    <p>中国医疗器械认证</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>ISO 13485:2016</h4>
+                    <p>医疗器械质量管理体系认证</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>ISO 27001:2022</h4>
+                    <p>信息安全管理体系认证</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>数据保护合规</h4>
+                    <p>符合《个人信息保护法》和《数据安全法》</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>医疗数据安全</h4>
+                    <p>符合《网络安全法》医疗数据保护要求</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>隐私保护</h4>
+                    <p>端到端加密，保护患者隐私</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>产品</h3>
+                    <a href="#products">智能健康档案</a>
+                    <a href="#ai-demo">AI体验</a>
+                    <a href="/static/dashboard.html">系统演示</a>
+                </div>
+                <div class="footer-section">
+                    <h3>公司</h3>
+                    <a href="#about">关于我们</a>
+                    <a href="#contact">联系我们</a>
+                    <a href="#">加入我们</a>
+                </div>
+                <div class="footer-section">
+                    <h3>支持</h3>
+                    <a href="#">帮助中心</a>
+                    <a href="#">API文档</a>
+                    <a href="#">开发者资源</a>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <a href="mailto:info@zhikang.com">info@zhikang.com</a>
+                    <a href="tel:+86-400-123-4567">400-123-4567</a>
+                    <a href="#">在线客服</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 智康. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        const form = document.getElementById('uploadForm');
-        const conversationTextarea = document.getElementById('conversation');
-        const charCount = document.getElementById('charCount');
-        const submitBtn = document.getElementById('submitBtn');
-        const loading = document.getElementById('loading');
-        const status = document.getElementById('status');
-        
-        // 字符计数
-        conversationTextarea.addEventListener('input', function() {
-            const count = this.value.length;
-            charCount.textContent = `${count} 字符`;
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
-        
-        // 表单提交
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(0, 0, 0, 0.95)';
+                header.style.backdropFilter = 'blur(20px)';
+                header.style.boxShadow = '0 8px 32px rgba(0, 255, 136, 0.1)';
+            } else {
+                header.style.background = 'rgba(0, 0, 0, 0.95)';
+                header.style.backdropFilter = 'blur(20px)';
+                header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // 为需要动画的元素添加观察
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateElements = document.querySelectorAll('.stat-item, .demo-card, .product-card');
+            animateElements.forEach(el => {
+                el.classList.add('scroll-animate');
+                observer.observe(el);
+            });
+
+            // 数字动画
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const numberObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateNumber(entry.target);
+                        numberObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            statNumbers.forEach(num => numberObserver.observe(num));
+        });
+
+        // 数字动画函数
+        function animateNumber(element) {
+            const text = element.textContent;
+            const number = parseInt(text.replace(/[^\d]/g, ''));
+            const suffix = text.replace(/[\d]/g, '');
             
-            const content = conversationTextarea.value.trim();
+            let current = 0;
+            const increment = number / 60;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= number) {
+                    current = number;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + suffix;
+            }, 16);
+        }
+
+        // 鼠标跟随效果
+        document.addEventListener('mousemove', function(e) {
+            const cursor = document.querySelector('.cursor');
+            if (!cursor) {
+                const newCursor = document.createElement('div');
+                newCursor.className = 'cursor';
+                newCursor.style.cssText = `
+                    position: fixed;
+                    width: 20px;
+                    height: 20px;
+                    background: radial-gradient(circle, rgba(0, 255, 136, 0.3) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    transition: transform 0.1s ease;
+                `;
+                document.body.appendChild(newCursor);
+            }
+            
+            const cursorElement = document.querySelector('.cursor');
+            cursorElement.style.left = e.clientX - 10 + 'px';
+            cursorElement.style.top = e.clientY - 10 + 'px';
+        });
+
+        // 高级粒子效果
+        function createParticles() {
+            const hero = document.querySelector('.hero');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 2px;
+                    height: 2px;
+                    background: rgba(0, 255, 136, 0.6);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    animation: float ${5 + Math.random() * 10}s ease-in-out infinite;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation-delay: ${Math.random() * 5}s;
+                `;
+                hero.appendChild(particle);
+            }
+        }
+
+        // 鼠标跟随粒子效果
+        function createMouseParticles() {
+            let mouseX = 0, mouseY = 0;
+            
+            document.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                // 创建跟随粒子
+                if (Math.random() > 0.8) {
+                    const particle = document.createElement('div');
+                    particle.style.cssText = `
+                        position: fixed;
+                        width: 4px;
+                        height: 4px;
+                        background: rgba(0, 255, 136, 0.8);
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 9999;
+                        left: ${mouseX}px;
+                        top: ${mouseY}px;
+                        animation: fadeOut 1s ease-out forwards;
+                    `;
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            });
+        }
+
+        // 添加fadeOut动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                0% { opacity: 1; transform: scale(1); }
+                100% { opacity: 0; transform: scale(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 交互式体验功能
+        function initInteractiveDemo() {
+            // 标签页切换
+            const tabs = document.querySelectorAll('.demo-tab');
+            const panels = document.querySelectorAll('.demo-panel');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // 移除所有活动状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+                    
+                    // 添加活动状态
+                    this.classList.add('active');
+                    document.getElementById(targetTab + '-panel').classList.add('active');
+                });
+            });
+        }
+
+        // 示例对话数据
+        const exampleConversations = {
+            fatigue: `医生：您最近有什么不适吗？
+患者：我经常感到疲劳，特别是下午的时候，总是想睡觉。
+医生：这种情况持续多长时间了？
+患者：大概有2-3个月了，工作压力比较大。
+医生：睡眠质量怎么样？
+患者：晚上入睡困难，经常失眠，早上起来还是很累。
+医生：饮食方面有什么变化吗？
+患者：最近胃口不好，经常忘记吃饭。
+医生：有没有其他症状？
+患者：有时候会头痛，注意力不集中，记忆力也下降了。`,
+            
+            sleep: `医生：您来咨询什么问题？
+患者：我睡眠质量很差，经常半夜醒来。
+医生：能详细说说睡眠情况吗？
+患者：晚上11点躺下，但经常到凌晨1-2点才能睡着，而且容易惊醒。
+医生：白天精神状态如何？
+患者：白天很困，注意力不集中，工作效率下降。
+医生：有什么压力或焦虑吗？
+患者：工作压力比较大，经常担心工作上的事情。
+医生：睡前有什么习惯？
+患者：经常看手机到很晚，有时候喝咖啡提神。`,
+            
+            diet: `医生：您想咨询什么健康问题？
+患者：我想了解如何改善饮食，最近体检发现血脂有点高。
+医生：平时饮食有什么习惯？
+患者：经常吃外卖，蔬菜吃得比较少，喜欢重口味。
+医生：运动情况怎么样？
+患者：基本不运动，工作比较忙，没时间锻炼。
+医生：有什么慢性病吗？
+患者：有高血压，在吃药控制。
+医生：体重有变化吗？
+患者：最近胖了5公斤，腰围也增加了。`,
+            
+            exercise: `医生：您想咨询运动方面的问题吗？
+患者：是的，我想开始运动，但不知道从何开始。
+医生：平时有什么运动习惯吗？
+患者：基本不运动，工作比较忙，身体也比较虚弱。
+医生：有什么慢性病或身体不适吗？
+患者：有轻微的颈椎病，经常腰酸背痛。
+医生：您希望达到什么目标？
+患者：希望增强体质，改善身体状况，减轻工作疲劳。
+医生：时间安排怎么样？
+患者：工作日比较忙，周末有时间，但不知道做什么运动合适。`,
+            
+            headache: `医生：您今天来看什么病？
+患者：我最近经常头痛，特别是工作压力大的时候。
+医生：头痛是什么类型的？
+患者：主要是太阳穴附近胀痛，有时候会恶心。
+医生：持续多长时间了？
+患者：大概一个月了，最近越来越频繁。
+医生：有没有其他症状？
+患者：有时候会头晕，眼睛也容易疲劳。
+医生：睡眠怎么样？
+患者：睡眠不好，经常做梦，早上起来很累。`,
+            
+            stomach: `医生：您哪里不舒服？
+患者：我最近胃经常不舒服，有时候会胃痛。
+医生：什么时候会痛？
+患者：主要是饭后，特别是吃了油腻的食物后。
+医生：有没有其他症状？
+患者：有时候会反酸，胃口也不好。
+医生：这种情况多久了？
+患者：大概两周了，之前没有过。
+医生：平时饮食规律吗？
+患者：经常不按时吃饭，有时候一天只吃两顿。`,
+            
+            heart: `医生：您有什么不舒服吗？
+患者：我最近有时候会心慌，心跳很快。
+医生：什么时候会出现这种情况？
+患者：主要是紧张或者运动后，有时候休息时也会。
+医生：持续多长时间了？
+患者：大概三周了，最近比较频繁。
+医生：有没有其他症状？
+患者：有时候会胸闷，呼吸有点困难。
+医生：平时运动吗？
+患者：很少运动，工作比较忙，最近才开始注意身体。`,
+            
+            diabetes: `医生：您来复查糖尿病吗？
+患者：是的，我想了解一下血糖控制情况。
+医生：最近血糖怎么样？
+患者：空腹血糖在7-8之间，餐后血糖有时候会到12。
+医生：饮食控制得怎么样？
+患者：尽量少吃糖，但有时候还是会忍不住。
+医生：运动情况如何？
+患者：每天会散步30分钟，但强度不大。
+医生：有没有其他不适？
+患者：有时候会口渴，尿频，体重也下降了。`
+        };
+
+        // 示例问题数据
+        const exampleQuestions = {
+            fatigue: '我最近总是感到疲劳，特别是下午的时候，可能是什么原因？',
+            sleep: '我睡眠质量很差，经常半夜醒来，有什么改善方法吗？',
+            diet: '我想改善饮食，最近体检发现血脂有点高，应该注意什么？',
+            exercise: '我想开始运动，但身体比较虚弱，应该从什么运动开始？',
+            headache: '我经常头痛，特别是工作压力大的时候，这是什么原因？',
+            stomach: '我最近胃经常不舒服，饭后会胃痛，应该怎么办？',
+            heart: '我有时候会心慌，心跳很快，这正常吗？',
+            diabetes: '我是糖尿病患者，血糖控制不好，有什么建议吗？',
+            weight: '我想减肥，但总是坚持不下来，有什么好的方法？',
+            stress: '我工作压力很大，经常焦虑，如何缓解压力？',
+            eyes: '我经常看电脑，眼睛很疲劳，有什么保护眼睛的方法？',
+            back: '我经常腰酸背痛，特别是久坐后，如何改善？'
+        };
+
+        // 加载示例对话
+        function loadExample(type) {
+            const textarea = document.querySelector('#upload-panel .demo-input');
+            textarea.value = exampleConversations[type];
+            textarea.focus();
+        }
+
+        // 加载示例问题
+        function loadQuestion(type) {
+            const textarea = document.querySelector('#question-panel .demo-input');
+            textarea.value = exampleQuestions[type];
+            textarea.focus();
+        }
+
+        // 分析对话
+        function analyzeConversation() {
+            const textarea = document.querySelector('#upload-panel .demo-input');
+            const content = textarea.value.trim();
+            
             if (!content) {
-                showStatus('请输入对话内容', 'error');
+                alert('请输入对话内容');
                 return;
             }
             
-            // 显示加载状态
-            submitBtn.disabled = true;
-            loading.style.display = 'block';
-            status.style.display = 'none';
+            showLoading('upload-result', 'upload-content');
             
-            try {
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        content: content
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showStatus(`上传成功！会话ID: ${result.session_id}`, 'success');
-                    
-                    // 自动跳转到结果页面
+            // 模拟API调用
                     setTimeout(() => {
-                        window.location.href = `/result?session_id=${result.session_id}`;
+                const result = generateAnalysisResult(content);
+                showResult('upload-result', 'upload-content', result);
                     }, 2000);
-                } else {
-                    showStatus(`上传失败: ${result.message || '未知错误'}`, 'error');
+        }
+
+        // 生成健康简历
+        function generateResume() {
+            const textarea = document.querySelector('#upload-panel .demo-input');
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                alert('请输入对话内容');
+                return;
+            }
+            
+            showLoading('upload-result', 'upload-content');
+            
+            // 模拟API调用
+            setTimeout(() => {
+                const result = generateResumeResult(content);
+                showResult('upload-result', 'upload-content', result);
+            }, 2500);
+        }
+
+        // AI问答
+        function askQuestion() {
+            const textarea = document.querySelector('#question-panel .demo-input');
+            const question = textarea.value.trim();
+            
+            if (!question) {
+                alert('请输入您的问题');
+                return;
+            }
+            
+            showLoading('question-result', 'question-content');
+            
+            // 模拟API调用
+            setTimeout(() => {
+                const answer = generateAnswer(question);
+                showResult('question-result', 'question-content', answer);
+            }, 1500);
+        }
+
+        // 加载任我行演示
+        function loadRenWoxingDemo() {
+            showLoading('demo-result', 'demo-content');
+            
+            setTimeout(() => {
+                const demo = generateRenWoxingDemo();
+                showResult('demo-result', 'demo-content', demo);
+            }, 1000);
+            }
+            
+            // 显示加载状态
+        function showLoading(resultId, contentId) {
+            const result = document.getElementById(resultId);
+            const content = document.getElementById(contentId);
+            
+            result.classList.add('show');
+            content.innerHTML = '<div style="text-align: center; color: #00ff88;">AI正在分析中...</div>';
+        }
+
+        // 显示结果
+        function showResult(resultId, contentId, result) {
+            const resultElement = document.getElementById(resultId);
+            const content = document.getElementById(contentId);
+            
+            resultElement.classList.add('show');
+            content.innerHTML = result;
+        }
+
+        // 生成分析结果
+        function generateAnalysisResult(content) {
+            // 根据对话内容生成不同的分析结果
+            let symptoms = [];
+            let riskFactors = [];
+            let recommendations = [];
+            
+            if (content.includes('疲劳') || content.includes('累')) {
+                symptoms.push('疲劳、乏力');
+                riskFactors.push('工作压力、睡眠不足');
+                recommendations.push('保证充足睡眠，适当运动');
+            }
+            
+            if (content.includes('失眠') || content.includes('睡眠')) {
+                symptoms.push('睡眠障碍');
+                riskFactors.push('压力、不良作息');
+                recommendations.push('建立规律作息，睡前放松');
+            }
+            
+            if (content.includes('头痛') || content.includes('头疼')) {
+                symptoms.push('头痛');
+                riskFactors.push('压力、眼疲劳');
+                recommendations.push('减少压力，保护眼睛');
+            }
+            
+            if (content.includes('胃痛') || content.includes('胃不舒服')) {
+                symptoms.push('胃部不适');
+                riskFactors.push('饮食不规律、压力');
+                recommendations.push('规律饮食，细嚼慢咽');
+            }
+            
+            if (content.includes('心慌') || content.includes('心跳')) {
+                symptoms.push('心悸');
+                riskFactors.push('压力、缺乏运动');
+                recommendations.push('适当运动，管理压力');
+            }
+            
+            if (content.includes('血糖') || content.includes('糖尿病')) {
+                symptoms.push('血糖异常');
+                riskFactors.push('饮食控制不佳');
+                recommendations.push('控制饮食，规律运动');
+            }
+            
+            // 默认分析
+            if (symptoms.length === 0) {
+                symptoms = ['疲劳、注意力不集中'];
+                riskFactors = ['工作压力、缺乏运动'];
+                recommendations = ['改善生活方式，增加运动'];
+            }
+            
+            const riskLevel = symptoms.length > 3 ? '较高' : symptoms.length > 1 ? '中等' : '较低';
+            
+            return `
+                <div style="margin-bottom: 1.5rem;">
+                    <strong style="color: #00ff88;">提取的健康实体：</strong>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>症状：${symptoms.join('、')}</li>
+                        <li>时间：2-3个月</li>
+                        <li>影响因素：${riskFactors.join('、')}</li>
+                        <li>相关疾病：需要进一步检查</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <strong style="color: #00ff88;">健康风险评估：</strong>
+                    <p style="margin: 0.5rem 0;">${riskLevel}风险 - 建议关注生活方式改善</p>
+                </div>
+                <div>
+                    <strong style="color: #00ff88;">建议措施：</strong>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>${recommendations.join('</li><li>')}</li>
+                        <li>定期体检，监测健康状况</li>
+                        <li>如症状持续或加重，及时就医</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // 生成简历结果
+        function generateResumeResult(content) {
+            return `
+                <div style="margin-bottom: 1.5rem;">
+                    <strong style="color: #00ff88;">个人健康档案：</strong>
+                    <div style="background: rgba(0,255,136,0.1); padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                        <p><strong>姓名：</strong>用户</p>
+                        <p><strong>年龄：</strong>30-40岁</p>
+                        <p><strong>主要症状：</strong>疲劳、失眠、注意力不集中</p>
+                        <p><strong>持续时间：</strong>2-3个月</p>
+                        <p><strong>风险因素：</strong>工作压力、饮食不规律</p>
+                    </div>
+                </div>
+                <div>
+                    <strong style="color: #00ff88;">健康建议：</strong>
+                    <p style="margin: 0.5rem 0;">建议您关注睡眠质量，适当调整工作节奏，增加运动，改善饮食结构。如症状持续，建议咨询专业医生。</p>
+                </div>
+            `;
+        }
+
+        // 生成AI回答
+        function generateAnswer(question) {
+            const answers = {
+                '疲劳': '疲劳可能由多种原因引起，包括睡眠不足、压力过大、营养不良、缺乏运动等。建议您：1）保证充足睡眠（7-8小时）；2）适当运动（每周150分钟中等强度）；3）均衡饮食（多吃蔬菜水果）；4）学会压力管理（冥想、深呼吸）；5）定期体检排除疾病。',
+                '睡眠': '改善睡眠质量的方法：1）建立规律作息（固定睡觉和起床时间）；2）睡前避免使用电子设备（提前1小时）；3）创造舒适的睡眠环境（温度18-22°C，遮光窗帘）；4）避免睡前大量进食和咖啡因；5）适当运动但避免睡前剧烈运动；6）放松技巧（冥想、温水泡脚）。',
+                '饮食': '健康饮食建议：1）多吃蔬菜水果（每天5份以上）；2）减少高脂肪食物（油炸、肥肉）；3）控制盐分摄入（每天<6g）；4）多喝水（每天1.5-2L）；5）定时定量进餐（三餐规律）；6）减少糖分摄入；7）选择全谷物；8）适量优质蛋白。',
+                '运动': '适合初学者的运动：1）散步（每天30分钟）；2）慢跑（从10分钟开始）；3）瑜伽（改善柔韧性）；4）游泳（全身运动）；5）骑自行车（低冲击）；6）太极拳（身心结合）。建议从低强度开始，逐渐增加运动量，注意热身和拉伸。',
+                '头痛': '头痛的常见原因：1）紧张性头痛（压力、焦虑）；2）偏头痛（遗传、激素变化）；3）颈椎问题（久坐、姿势不良）；4）睡眠不足；5）脱水；6）眼疲劳。建议：1）保持规律作息；2）适当运动；3）避免长时间低头；4）充足睡眠；5）多喝水；6）如持续严重请就医。',
+                '胃部': '胃部保养建议：1）规律饮食（三餐定时）；2）细嚼慢咽（每口咀嚼20次）；3）避免过饱过饥；4）少吃刺激性食物（辛辣、酸、冷）；5）饭后不要立即躺下；6）戒烟限酒；7）保持心情愉快；8）适当运动促进消化。如症状持续或加重，建议及时就医。',
+                '心脏': '心脏健康维护：1）规律运动（每周150分钟中等强度）；2）健康饮食（低盐低脂）；3）控制体重（BMI 18.5-24）；4）戒烟限酒；5）管理压力；6）充足睡眠；7）定期体检；8）控制血压、血糖、血脂。心慌可能是压力、咖啡因、睡眠不足等引起，如频繁出现建议就医检查。',
+                '糖尿病': '糖尿病管理要点：1）血糖监测（定期测血糖）；2）饮食控制（低糖低脂高纤维）；3）规律运动（每天30分钟）；4）按时服药；5）控制体重；6）足部护理；7）定期眼科检查；8）血压血脂管理。目标：空腹血糖<7mmol/L，餐后2小时<10mmol/L，HbA1c<7%。',
+                '减肥': '科学减肥方法：1）控制热量摄入（每天减少500卡路里）；2）均衡饮食（蛋白质30%，碳水50%，脂肪20%）；3）规律运动（有氧+力量训练）；4）充足睡眠（7-8小时）；5）多喝水（每天2L）；6）细嚼慢咽；7）记录饮食和运动；8）设定合理目标（每周减0.5-1kg）。',
+                '压力': '压力缓解方法：1）深呼吸练习（4-7-8呼吸法）；2）冥想或正念练习；3）规律运动（释放内啡肽）；4）充足睡眠；5）时间管理（制定优先级）；6）社交支持（与朋友家人交流）；7）兴趣爱好（音乐、阅读、绘画）；8）专业帮助（心理咨询）。',
+                '眼睛': '护眼方法：1）20-20-20法则（每20分钟看20英尺外20秒）；2）调整屏幕亮度（与环境光线匹配）；3）保持适当距离（屏幕距离50-70cm）；4）眨眼练习（每分钟15-20次）；5）使用防蓝光眼镜；6）充足睡眠；7）多吃护眼食物（胡萝卜、蓝莓、菠菜）；8）定期眼科检查。',
+                '腰背': '腰背保健：1）保持正确姿势（挺胸收腹）；2）避免久坐（每小时起身活动）；3）加强核心肌群（平板支撑、桥式）；4）拉伸练习（猫式、婴儿式）；5）选择合适的床垫和枕头；6）避免重物搬运；7）控制体重；8）适当运动（游泳、瑜伽）。如疼痛持续请咨询医生。'
+            };
+            
+            for (let key in answers) {
+                if (question.includes(key)) {
+                    return answers[key];
+                }
+            }
+            
+            return '根据您的问题，我建议您：1）保持良好的生活习惯；2）适当运动；3）均衡饮食；4）保证充足睡眠；5）管理压力；6）定期体检；7）如有持续不适，请咨询专业医生。';
+        }
+
+        // 生成任我行演示
+        function generateRenWoxingDemo() {
+            return `
+                <div style="margin-bottom: 1.5rem;">
+                    <strong style="color: #00ff88;">任我行健康档案：</strong>
+                    <div style="background: rgba(0,255,136,0.1); padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                        <p><strong>姓名：</strong>任我行</p>
+                        <p><strong>年龄：</strong>50-60岁</p>
+                        <p><strong>身份：</strong>日月神教教主</p>
+                        <p><strong>主要症状：</strong>内功反噬、情绪波动、睡眠障碍</p>
+                        <p><strong>风险因素：</strong>练功走火入魔、长期压力、情绪不稳定</p>
+                    </div>
+                </div>
+                <div>
+                    <strong style="color: #00ff88;">AI分析：</strong>
+                    <p style="margin: 0.5rem 0;">任我行作为武林高手，长期练功导致内功反噬，加上教主身份带来的压力，容易出现情绪波动和睡眠问题。建议：1）适当调整练功强度；2）学习情绪管理；3）保证充足休息；4）寻求专业指导。</p>
+                </div>
+            `;
+        }
+
+        // 终极调试函数：检查所有可能的问题
+        function debugHeroStyles() {
+            console.log('=== 终极Hero区域调试信息 ===');
+            
+            // 检查所有相关元素
+            const hero = document.querySelector('.hero');
+            const heroContent = document.querySelector('.hero-content');
+            const heroH1 = document.querySelector('.hero h1');
+            const heroContainer = document.querySelector('.container');
+            
+            console.log('=== 检查Hero::before伪元素 ===');
+            const heroBefore = window.getComputedStyle(hero, '::before');
+            console.log('Hero::before背景色:', heroBefore.backgroundColor);
+            console.log('Hero::before背景图片:', heroBefore.backgroundImage);
+            console.log('Hero::before内容:', heroBefore.content);
+            console.log('Hero::before位置:', heroBefore.position);
+            console.log('Hero::beforeZ-index:', heroBefore.zIndex);
+            console.log('Hero::before显示:', heroBefore.display);
+            
+            // 检查Hero::before是否就是问题所在
+            if (heroBefore.backgroundColor !== 'rgba(0, 0, 0, 0)' && heroBefore.backgroundColor !== 'transparent') {
+                console.log('🚨 发现问题！Hero::before有非透明背景色！');
+                // 强制移除Hero::before的背景
+                const style = document.createElement('style');
+                style.textContent = `
+                    .hero::before {
+                        background: none !important;
+                        background-color: transparent !important;
+                        background-image: none !important;
+                    }
+                `;
+                document.head.appendChild(style);
+                console.log('已强制移除Hero::before的背景');
+            }
+            
+            // 检查所有子元素
+            console.log('=== 检查Hero区域所有子元素 ===');
+            const allChildren = hero.querySelectorAll('*');
+            allChildren.forEach((child, index) => {
+                const style = window.getComputedStyle(child);
+                if (style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent') {
+                    console.log(`🚨 子元素 ${index} (${child.tagName}.${child.className}) 有背景色:`, style.backgroundColor);
+                }
+            });
+            
+            console.log('========================');
+        }
+
+        // 页面加载动画和高级效果
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease-in-out';
+                    setTimeout(() => {
+                document.body.style.opacity = '1';
+                
+                // 启动高级效果
+                createParticles();
+                createMouseParticles();
+                
+                // 初始化交互式体验
+                initInteractiveDemo();
+                
+                // 调试Hero区域样式
+                setTimeout(debugHeroStyles, 1000);
+                
+                // 激进解决方案：完全替换h1元素 - 已禁用
+                // setTimeout(() => {
+                //     const heroContent = document.querySelector('.hero-content');
+                //     const oldH1 = document.querySelector('.hero h1');
+                //     if (heroContent && oldH1) {
+                //         // 创建新的h1元素
+                //         const newH1 = document.createElement('h1');
+                //         newH1.textContent = '帮助每位患者成为最优化版本的自己';
+                //         newH1.style.cssText = `
+                //             font-size: 4.5rem !important;
+                //             margin-bottom: 2rem !important;
+                //             font-weight: 800 !important;
+                //             letter-spacing: -0.02em !important;
+                //             line-height: 1.1 !important;
+                //             text-shadow: 0 4px 20px rgba(0, 255, 136, 0.3) !important;
+                //             color: #00ff88 !important;
+                //             animation: glow 3s ease-in-out infinite !important;
+                //             position: relative !important;
+                //             z-index: 2 !important;
+                //             background: none !important;
+                //             background-color: transparent !important;
+                //             background-image: none !important;
+                //             -webkit-background-clip: initial !important;
+                //             -webkit-text-fill-color: initial !important;
+                //             background-clip: initial !important;
+                //             display: block !important;
+                //             opacity: 1 !important;
+                //             margin: 0 !important;
+                //             padding: 0 !important;
+                //             border: none !important;
+                //             outline: none !important;
+                //         `;
+                //         
+                //         // 替换旧的h1
+                //         heroContent.replaceChild(newH1, oldH1);
+                //         console.log('已完全替换h1元素');
+                //     }
+                // }, 2000);
+                
+                // 持续监控和修复
+                setInterval(() => {
+                    const heroH1 = document.querySelector('.hero h1');
+                    if (heroH1) {
+                        heroH1.style.background = 'none';
+                        heroH1.style.backgroundColor = 'transparent';
+                        heroH1.style.backgroundImage = 'none';
+                        heroH1.style.webkitBackgroundClip = 'initial';
+                        heroH1.style.webkitTextFillColor = 'initial';
+                        heroH1.style.backgroundClip = 'initial';
+                    }
+                }, 100);
+                
+                // 为Hero区域添加特殊效果
+                const heroTitle = document.querySelector('.hero h1');
+                if (heroTitle) {
+                    // heroTitle.classList.add('animate-glow'); // 移除发光效果
                 }
                 
-            } catch (error) {
-                showStatus(`上传失败: ${error.message}`, 'error');
-            } finally {
-                submitBtn.disabled = false;
-                loading.style.display = 'none';
-            }
+                // 为按钮添加特殊效果
+                const primaryButtons = document.querySelectorAll('.btn-primary');
+                primaryButtons.forEach(btn => {
+                    btn.addEventListener('mouseenter', function() {
+                        this.classList.add('animate-pulse');
+                    });
+                    btn.addEventListener('mouseleave', function() {
+                        this.classList.remove('animate-pulse');
+                    });
+                });
+                
+            }, 100);
         });
-        
-        function showStatus(message, type) {
-            status.textContent = message;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
-        }
     </script>
 </body>
 </html>

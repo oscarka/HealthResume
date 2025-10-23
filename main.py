@@ -816,7 +816,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
-    """首页 - 重定向到仪表板"""
+    """首页 - 官网首页"""
+    with open("static/index.html", "r", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard():
+    """仪表板页面"""
     with open("static/dashboard.html", "r", encoding="utf-8") as f:
         return HTMLResponse(content=f.read())
 

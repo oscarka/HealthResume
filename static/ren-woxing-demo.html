@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任我行的健康档案 - 智康AI体验</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .back-link {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Character Profile */
+        .character-profile {
+            background: white;
+            margin: -2rem auto 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .character-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .character-info h2 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .character-info p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Health Overview */
+        .health-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .health-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #2563eb;
+        }
+
+        .health-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .health-card.danger {
+            border-left-color: #ef4444;
+        }
+
+        .health-card h3 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .health-card p {
+            color: #64748b;
+        }
+
+        /* Timeline */
+        .timeline-section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .timeline-section h3 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: #2563eb;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #e2e8f0;
+        }
+
+        .timeline-item.danger::before {
+            background: #ef4444;
+        }
+
+        .timeline-item.warning::before {
+            background: #f59e0b;
+        }
+
+        .timeline-content {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .timeline-item.danger .timeline-content {
+            border-left-color: #ef4444;
+        }
+
+        .timeline-item.warning .timeline-content {
+            border-left-color: #f59e0b;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: #64748b;
+        }
+
+        /* Knowledge Graph Preview */
+        .graph-preview {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .graph-preview h3 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .graph-preview p {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        .graph-visualization {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 3rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .graph-node {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .graph-node.symptom {
+            background: #f59e0b;
+        }
+
+        .graph-node.disease {
+            background: #ef4444;
+        }
+
+        .graph-node.treatment {
+            background: #10b981;
+        }
+
+        .graph-connection {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            margin: 0 0.5rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .character-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">智康</div>
+            <a href="/static/index.html" class="back-link">← 返回首页</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>🎭 任我行的健康档案</h1>
+            <p>体验AI如何分析复杂健康问题，了解知识图谱的强大功能</p>
+        </div>
+    </section>
+
+    <!-- Character Profile -->
+    <div class="container">
+        <div class="character-profile">
+            <div class="character-header">
+                <div class="character-avatar">任</div>
+                <div class="character-info">
+                    <h2>任我行</h2>
+                    <p>日月神教前教主，武功高强但深受内伤困扰</p>
+                    <p><strong>年龄：</strong>50岁 | <strong>身份：</strong>武林高手 | <strong>健康状况：</strong>高危</p>
+                </div>
+            </div>
+
+            <!-- Health Overview -->
+            <div class="health-overview">
+                <div class="health-card">
+                    <h3>4个</h3>
+                    <p>当前症状</p>
+                </div>
+                <div class="health-card warning">
+                    <h3>3个</h3>
+                    <p>主要问题</p>
+                </div>
+                <div class="health-card">
+                    <h3>2种</h3>
+                    <p>用药情况</p>
+                </div>
+                <div class="health-card danger">
+                    <h3>高危</h3>
+                    <p>风险等级</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Timeline -->
+        <div class="timeline-section">
+            <h3>📅 健康时间线</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">20岁</div>
+                        <div class="timeline-title">开始修炼吸星大法</div>
+                        <div class="timeline-description">开始修炼这门威力巨大但反噬严重的武功，为日后的健康问题埋下隐患</div>
+                    </div>
+                </div>
+                <div class="timeline-item warning">
+                    <div class="timeline-content">
+                        <div class="timeline-date">30岁</div>
+                        <div class="timeline-title">与东方不败决斗重伤</div>
+                        <div class="timeline-description">在与东方不败的决斗中身受重伤，内伤加重，开始出现气血逆行症状</div>
+                    </div>
+                </div>
+                <div class="timeline-item danger">
+                    <div class="timeline-content">
+                        <div class="timeline-date">35岁</div>
+                        <div class="timeline-title">被囚禁12年</div>
+                        <div class="timeline-description">被东方不败囚禁在西湖梅庄地牢12年，营养不良，内伤进一步恶化</div>
+                    </div>
+                </div>
+                <div class="timeline-item danger">
+                    <div class="timeline-content">
+                        <div class="timeline-date">47岁</div>
+                        <div class="timeline-title">重出江湖</div>
+                        <div class="timeline-description">重出江湖后，吸星大法反噬加剧，内伤严重，随时可能发作</div>
+                    </div>
+                </div>
+                <div class="timeline-item danger">
+                    <div class="timeline-content">
+                        <div class="timeline-date">50岁</div>
+                        <div class="timeline-title">内伤发作身亡</div>
+                        <div class="timeline-description">最终因吸星大法反噬，内伤发作而亡，结束了传奇的一生</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Graph Preview -->
+        <div class="graph-preview">
+            <h3>🧠 健康知识图谱</h3>
+            <p>AI分析出的健康实体关系网络</p>
+            
+            <div class="graph-visualization">
+                <div style="margin-bottom: 2rem;">
+                    <span class="graph-node">任我行</span>
+                    <span class="graph-connection">→</span>
+                    <span class="graph-node symptom">内伤</span>
+                    <span class="graph-connection">→</span>
+                    <span class="graph-node disease">吸星大法反噬</span>
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <span class="graph-node symptom">气血逆行</span>
+                    <span class="graph-connection">→</span>
+                    <span class="graph-node symptom">头痛</span>
+                    <span class="graph-connection">→</span>
+                    <span class="graph-node symptom">胸闷</span>
+                </div>
+                
+                <div>
+                    <span class="graph-node treatment">九花玉露丸</span>
+                    <span class="graph-connection">治疗</span>
+                    <span class="graph-node symptom">内伤</span>
+                    <span class="graph-connection">+</span>
+                    <span class="graph-node treatment">大还丹</span>
+                </div>
+            </div>
+            
+            <p style="color: #64748b; font-size: 0.9rem;">
+                * 这是简化版本，完整图谱包含更多节点和复杂关系
+            </p>
+        </div>
+
+        <!-- AI Analysis -->
+        <div class="timeline-section">
+            <h3>🤖 AI健康分析</h3>
+            <div style="background: #f0f9ff; padding: 2rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                <h4 style="color: #0c4a6e; margin-bottom: 1rem;">当前状况分析</h4>
+                <p style="color: #0c4a6e; margin-bottom: 1rem;">
+                    任我行目前处于高危状态，主要健康问题包括：吸星大法反噬导致的内伤、气血逆行、以及长期营养不良造成的身体虚弱。
+                </p>
+                
+                <h4 style="color: #0c4a6e; margin-bottom: 1rem;">主要风险</h4>
+                <ul style="color: #0c4a6e; margin-left: 1.5rem;">
+                    <li>内伤随时可能发作，危及生命</li>
+                    <li>武功反噬持续加重</li>
+                    <li>心理创伤影响康复</li>
+                </ul>
+                
+                <h4 style="color: #0c4a6e; margin-bottom: 1rem;">健康建议</h4>
+                <ul style="color: #0c4a6e; margin-left: 1.5rem;">
+                    <li>立即停止修炼吸星大法</li>
+                    <li>静养调理，避免剧烈运动</li>
+                    <li>寻求专业医疗帮助</li>
+                    <li>心理疏导，缓解创伤</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/static/graph.html" class="btn btn-primary">查看完整知识图谱</a>
+            <a href="/static/dashboard.html" class="btn btn-secondary">体验自己的健康分析</a>
+            <a href="/static/index.html" class="btn btn-secondary">返回首页</a>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为时间线项目添加点击展开效果
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('expanded');
+                });
+            });
+
+            // 为图谱节点添加悬停效果
+            const graphNodes = document.querySelectorAll('.graph-node');
+            graphNodes.forEach(node => {
+                node.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.transition = 'transform 0.2s';
+                });
+                
+                node.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

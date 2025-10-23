@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品介绍 - 智康健康知识图谱系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .cta-button {
+            background: #2563eb;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Platform Overview */
+        .platform-overview {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .platform-overview h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .platform-description {
+            font-size: 1.2rem;
+            color: #64748b;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            line-height: 1.8;
+        }
+
+        .platform-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .feature-card p {
+            color: #64748b;
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 6rem 0;
+            background: #f8fafc;
+        }
+
+        .products-section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-subtitle {
+            opacity: 0.9;
+        }
+
+        .product-content {
+            padding: 2rem;
+        }
+
+        .product-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features {
+            list-style: none;
+        }
+
+        .product-features li {
+            padding: 0.5rem 0;
+            color: #64748b;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .product-cta {
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* AI Intelligence Section */
+        .ai-intelligence {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .ai-intelligence h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .ai-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .ai-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .ai-tool {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #2563eb;
+        }
+
+        .ai-tool h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .ai-tool p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-tool .highlight {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Compliance Section */
+        .compliance {
+            padding: 6rem 0;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .compliance h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .compliance-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .compliance-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .compliance-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-white {
+            background: white;
+            color: #2563eb;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .footer-section a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-white {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">智康</div>
+            <ul class="nav-links">
+                <li><a href="/static/index.html">首页</a></li>
+                <li><a href="/static/index.html#ai-demo">AI体验</a></li>
+                <li><a href="#about">关于我们</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+            <a href="/static/dashboard.html" class="cta-button">立即体验</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>智康云平台 (HCP)</h1>
+            <p>梦想、构建并变革护理和研究</p>
+        </div>
+    </section>
+
+    <!-- Platform Overview -->
+    <section class="platform-overview">
+        <div class="container">
+            <h2>智康云平台 - 医疗健康领域的Palantir</h2>
+            <p class="platform-description">
+                我们一切工作的核心是智康云平台(HCP)——我们强大的端到端数字健康创新基础。将其视为医疗健康领域的Palantir：一个强大、可定制的基础，简化了开发和维护受监管、数字优先和AI优先的医疗健康应用程序的复杂性。
+            </p>
+            
+            <div class="platform-features">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>快速构建</h3>
+                    <p>从健康超级应用到监管解决方案，快速构建各种医疗应用</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI优先</h3>
+                    <p>集成AI算法，提供智能筛查、诊断和自动化咨询服务</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>无限生态</h3>
+                    <p>访问无限的合作伙伴生态系统，随时随地连接患者</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>安全合规</h3>
+                    <p>符合最高监管标准，确保数据安全和隐私保护</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            <h2>我们的产品</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-header">
+                        <div class="product-icon">📋</div>
+                        <div class="product-title">智能健康档案</div>
+                        <div class="product-subtitle">个人健康知识图谱系统</div>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">
+                            自动从医患对话中提取关键健康信息，构建个人健康知识图谱，提供全面的健康档案管理。
+                        </p>
+                        <ul class="product-features">
+                            <li>AI驱动的知识提取</li>
+                            <li>可视化健康图谱</li>
+                            <li>智能健康分析</li>
+                            <li>个性化健康建议</li>
+                        </ul>
+                        <div class="product-cta">
+                            <a href="/static/dashboard.html" class="btn btn-primary">立即体验</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <div class="product-icon">🏥</div>
+                        <div class="product-title">远程患者监测</div>
+                        <div class="product-subtitle">RPM工具</div>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">
+                            包括虚拟病房和家庭医院模式，实时监测患者健康状况，提供及时的医疗干预。
+                        </p>
+                        <ul class="product-features">
+                            <li>实时健康监测</li>
+                            <li>虚拟病房管理</li>
+                            <li>家庭医院模式</li>
+                            <li>紧急预警系统</li>
+                        </ul>
+                        <div class="product-cta">
+                            <a href="#" class="btn btn-secondary">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <div class="product-icon">🔍</div>
+                        <div class="product-title">AI筛查诊断</div>
+                        <div class="product-subtitle">智能诊断工具</div>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">
+                            AI优先的筛查和诊断工具，提供智能分诊、自动化咨询和精准诊断支持。
+                        </p>
+                        <ul class="product-features">
+                            <li>智能疾病筛查</li>
+                            <li>自动化分诊</li>
+                            <li>AI辅助诊断</li>
+                            <li>风险评估</li>
+                        </ul>
+                        <div class="product-cta">
+                            <a href="#" class="btn btn-secondary">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <div class="product-icon">📱</div>
+                        <div class="product-title">健康超级应用</div>
+                        <div class="product-subtitle">一站式健康管理</div>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">
+                            集成预约预订、消息传递、文档交付和教育活动的一站式健康管理平台。
+                        </p>
+                        <ul class="product-features">
+                            <li>在线预约系统</li>
+                            <li>医患消息传递</li>
+                            <li>文档管理</li>
+                            <li>健康教育</li>
+                        </ul>
+                        <div class="product-cta">
+                            <a href="#" class="btn btn-secondary">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Intelligence Section -->
+    <section class="ai-intelligence">
+        <div class="container">
+            <h2>智康智能 - AI不是功能，而是我们的基础</h2>
+            <p class="ai-subtitle">
+                我们以AI为引领——不仅是为了自动化，更是为了放大人类关怀。通过智康智能，我们构建了改变医疗工作方式的工具。
+            </p>
+            
+            <div class="ai-tools">
+                <div class="ai-tool">
+                    <h3>智能护士</h3>
+                    <p>实现10倍临床生产力，让护士能够支持十倍以上的患者</p>
+                    <div class="highlight">10x 效率提升</div>
+                </div>
+                <div class="ai-tool">
+                    <h3>智能工作室</h3>
+                    <p>输入您想要的内容，智康智能立即构建符合监管要求的应用程序</p>
+                    <div class="highlight">快速开发</div>
+                </div>
+                <div class="ai-tool">
+                    <h3>智能记录</h3>
+                    <p>直接从医患对话中捕获临床和计费信息</p>
+                    <div class="highlight">自动化记录</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compliance Section -->
+    <section class="compliance">
+        <div class="container">
+            <h2>符合最高监管标准——让您专注于护理</h2>
+            <p style="font-size: 1.2rem; color: #64748b; margin-bottom: 3rem;">
+                在四大洲获得监管和合规批准，HCP正在为安全且可扩展的全球健康部署设定新标准。
+            </p>
+            
+            <div class="compliance-grid">
+                <div class="compliance-item">
+                    <h4>国家药监局认证</h4>
+                    <p>中国医疗器械认证</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>ISO 13485:2016</h4>
+                    <p>医疗器械质量管理体系认证</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>ISO 27001:2022</h4>
+                    <p>信息安全管理体系认证</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>数据保护合规</h4>
+                    <p>符合《个人信息保护法》和《数据安全法》</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>医疗数据安全</h4>
+                    <p>符合《网络安全法》医疗数据保护要求</p>
+                </div>
+                <div class="compliance-item">
+                    <h4>隐私保护</h4>
+                    <p>端到端加密，保护患者隐私</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>迈出下一步</h2>
+            <p>告诉我们您要解决的问题，智康专家将帮助您找到最佳解决方案。</p>
+            <div class="cta-buttons">
+                <a href="/static/ren-woxing-demo.html" class="btn-white">体验AI健康分析</a>
+                <a href="/static/dashboard.html" class="btn-white">进入系统</a>
+                <a href="#contact" class="btn-white">联系我们</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>产品</h3>
+                    <a href="#products">智能健康档案</a>
+                    <a href="/static/index.html#ai-demo">AI体验</a>
+                    <a href="/static/dashboard.html">系统演示</a>
+                </div>
+                <div class="footer-section">
+                    <h3>公司</h3>
+                    <a href="#about">关于我们</a>
+                    <a href="#contact">联系我们</a>
+                    <a href="#">加入我们</a>
+                </div>
+                <div class="footer-section">
+                    <h3>支持</h3>
+                    <a href="#">帮助中心</a>
+                    <a href="#">API文档</a>
+                    <a href="#">开发者资源</a>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <a href="mailto:info@zhikang.com">info@zhikang.com</a>
+                    <a href="tel:+86-400-123-4567">400-123-4567</a>
+                    <a href="#">在线客服</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 智康. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.background = '#fff';
+                header.style.backdropFilter = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

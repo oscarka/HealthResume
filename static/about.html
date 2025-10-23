@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 智康健康科技</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .cta-button {
+            background: #2563eb;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Mission Section */
+        .mission {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .mission-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .mission-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #1e293b;
+        }
+
+        .mission-text p {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .mission-visual {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .mission-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .mission-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Values Section */
+        .values {
+            padding: 6rem 0;
+            background: #f8fafc;
+        }
+
+        .values h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .value-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .value-card p {
+            color: #64748b;
+        }
+
+        /* Team Section */
+        .team {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .team h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1e293b;
+        }
+
+        .team-description {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #2563eb, #1d4ed8);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: #2563eb;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .member-bio {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Impact Section */
+        .impact {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+        }
+
+        .impact h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .impact-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .impact-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+
+        .impact-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Vision Section */
+        .vision {
+            padding: 6rem 0;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .vision h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #1e293b;
+        }
+
+        .vision-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .vision-text {
+            font-size: 1.3rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .vision-goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .goal-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .goal-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .goal-item h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .goal-item p {
+            color: #64748b;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-white {
+            background: white;
+            color: #2563eb;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #2563eb;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .footer-section a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .mission-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">智康</div>
+            <ul class="nav-links">
+                <li><a href="/static/index.html">首页</a></li>
+                <li><a href="/static/products.html">产品</a></li>
+                <li><a href="/static/index.html#ai-demo">AI体验</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+            <a href="/static/dashboard.html" class="cta-button">立即体验</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>我们的超能力：为人类服务的智康人</h1>
+            <p>我们致力于帮助每位患者成为最优化版本的自己</p>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission">
+        <div class="container">
+            <div class="mission-content">
+                <div class="mission-text">
+                    <h2>我们的使命</h2>
+                    <p>
+                        在智康，我们痴迷于努力工作，并与真正关心的人为伍。我们相信大胆的想法、不懈的执行和真正的团队精神是改变世界所需要的。
+                    </p>
+                    <p>
+                        我们已经影响了近1000万人的生命——我们的愿景是达到10亿人——我们不仅是在改善健康；我们正在为生命增加150亿人类年。我们的工作涵盖AI、受监管的数字健康、生命科学、全球健康系统和政府合作伙伴关系。而这仅仅是个开始。
+                    </p>
+                </div>
+                <div class="mission-visual">
+                    <div class="mission-icon">🎯</div>
+                    <h3>我们的目标</h3>
+                    <p>帮助每位患者成为最优化版本的自己</p>
+                    <div class="mission-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">1000万+</div>
+                            <div class="stat-label">用户受益</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">150亿</div>
+                            <div class="stat-label">人类年</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values">
+        <div class="container">
+            <h2>我们的价值观</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">💡</div>
+                    <h3>大胆创新</h3>
+                    <p>我们相信大胆的想法能够改变世界，勇于探索未知领域，推动医疗健康技术的边界</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">⚡</div>
+                    <h3>不懈执行</h3>
+                    <p>我们专注于将想法转化为现实，通过不懈的努力和精准的执行来实现我们的目标</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3>团队精神</h3>
+                    <p>我们相信真正的团队精神是成功的关键，我们相互支持，共同成长</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">❤️</div>
+                    <h3>真正关怀</h3>
+                    <p>我们真正关心每一位用户，致力于为他们提供最好的健康服务体验</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team">
+        <div class="container">
+            <h2>我们的团队</h2>
+            <p class="team-description">
+                我们拥有一支由医疗专家、AI工程师、产品设计师和运营专家组成的多元化团队，共同致力于推动数字健康技术的发展。
+            </p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">张</div>
+                    <div class="member-name">张博士</div>
+                    <div class="member-role">首席医疗官</div>
+                    <div class="member-bio">拥有20年临床经验，专注于AI在医疗诊断中的应用</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">李</div>
+                    <div class="member-role">技术总监</div>
+                    <div class="member-name">李工程师</div>
+                    <div class="member-bio">AI和机器学习专家，负责核心技术架构设计</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">王</div>
+                    <div class="member-name">王设计师</div>
+                    <div class="member-role">产品总监</div>
+                    <div class="member-bio">用户体验专家，致力于创造直观易用的健康管理工具</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">陈</div>
+                    <div class="member-name">陈经理</div>
+                    <div class="member-role">运营总监</div>
+                    <div class="member-bio">医疗行业资深专家，负责产品运营和市场推广</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section class="impact">
+        <div class="container">
+            <h2>我们的影响</h2>
+            <p style="text-align: center; font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">
+                我们的产品已支持全球近1000万用户，让我们一起构建智康，成为世界上最具影响力的健康公司。
+            </p>
+            <div class="impact-grid">
+                <div class="impact-item">
+                    <div class="impact-number">1000万+</div>
+                    <div class="impact-label">用户受益</div>
+                </div>
+                <div class="impact-item">
+                    <div class="impact-number">50+</div>
+                    <div class="impact-label">医疗机构合作</div>
+                </div>
+                <div class="impact-item">
+                    <div class="impact-number">99.9%</div>
+                    <div class="impact-label">系统可用性</div>
+                </div>
+                <div class="impact-item">
+                    <div class="impact-number">24/7</div>
+                    <div class="impact-label">全天候服务</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="vision">
+        <div class="container">
+            <h2>我们的愿景</h2>
+            <div class="vision-content">
+                <p class="vision-text">
+                    我们的愿景是成为世界上最具影响力的健康公司，通过AI驱动的数字健康技术，帮助全球10亿人获得更好的健康服务，为人类生命增加150亿年。
+                </p>
+                <div class="vision-goals">
+                    <div class="goal-item">
+                        <div class="goal-icon">🌍</div>
+                        <h3>全球覆盖</h3>
+                        <p>将我们的健康服务扩展到全球每一个角落</p>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-icon">🤖</div>
+                        <h3>AI驱动</h3>
+                        <p>利用最先进的AI技术提升医疗服务质量</p>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-icon">🔬</div>
+                        <h3>科研创新</h3>
+                        <p>持续投入研发，推动医疗健康技术的进步</p>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-icon">🤝</div>
+                        <h3>合作共赢</h3>
+                        <p>与全球医疗机构建立深度合作关系</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>加入我们</h2>
+            <p>让我们一起构建智康，成为世界上最具影响力的健康公司</p>
+            <div class="cta-buttons">
+                <a href="/static/ren-woxing-demo.html" class="btn btn-white">体验AI健康分析</a>
+                <a href="/static/dashboard.html" class="btn btn-outline">进入系统</a>
+                <a href="#contact" class="btn btn-outline">联系我们</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>产品</h3>
+                    <a href="/static/products.html">智能健康档案</a>
+                    <a href="/static/index.html#ai-demo">AI体验</a>
+                    <a href="/static/dashboard.html">系统演示</a>
+                </div>
+                <div class="footer-section">
+                    <h3>公司</h3>
+                    <a href="#about">关于我们</a>
+                    <a href="#contact">联系我们</a>
+                    <a href="#">加入我们</a>
+                </div>
+                <div class="footer-section">
+                    <h3>支持</h3>
+                    <a href="#">帮助中心</a>
+                    <a href="#">API文档</a>
+                    <a href="#">开发者资源</a>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <a href="mailto:info@zhikang.com">info@zhikang.com</a>
+                    <a href="tel:+86-400-123-4567">400-123-4567</a>
+                    <a href="#">在线客服</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 智康. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.background = '#fff';
+                header.style.backdropFilter = 'none';
+            }
+        });
+
+        // 数字动画效果
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.impact-number, .stat-number');
+            numbers.forEach(number => {
+                const target = parseInt(number.textContent.replace(/[^\d]/g, ''));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    if (number.textContent.includes('万')) {
+                        number.textContent = Math.floor(current) + '万+';
+                    } else if (number.textContent.includes('亿')) {
+                        number.textContent = Math.floor(current) + '亿';
+                    } else if (number.textContent.includes('%')) {
+                        number.textContent = Math.floor(current) + '%';
+                    } else if (number.textContent.includes('/')) {
+                        number.textContent = Math.floor(current) + '/7';
+                    } else {
+                        number.textContent = Math.floor(current) + '+';
+                    }
+                }, 16);
+            });
+        }
+
+        // 当用户滚动到影响部分时触发动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateNumbers();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        const impactSection = document.querySelector('.impact');
+        if (impactSection) {
+            observer.observe(impactSection);
+        }
+    </script>
+</body>
+</html>
